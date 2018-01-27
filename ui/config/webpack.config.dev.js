@@ -18,7 +18,7 @@ const env = getClientEnvironment(publicUrl);
 
 module.exports = {
   devtool: 'cheap-module-source-map',
-
+  target: 'electron-main',
   entry: [
     require.resolve('./polyfills'),
     require.resolve('react-dev-utils/webpackHotDevClient'),
@@ -79,16 +79,20 @@ module.exports = {
             loader: require.resolve('babel-loader'),
             options: {
               cacheDirectory: true,
+              plugins: ['transform-object-rest-spread', 'transform-decorators-legacy']
             },
           },
           {
             test: /\.css$/,
+            include: paths.appSrc,
             use: [
               require.resolve('style-loader'),
               {
                 loader: require.resolve('css-loader'),
                 options: {
                   importLoaders: 1,
+                  modules: true,
+                  localIdentName: '[path][name]__[local]--[hash:base64:5]'
                 },
               },
               {
@@ -97,19 +101,25 @@ module.exports = {
                   ident: 'postcss',
                   plugins: () => [
                     require('postcss-flexbugs-fixes'),
-                    autoprefixer({
-                      browsers: [
-                        '>1%',
-                        'last 4 versions',
-                        'Firefox ESR',
-                        'not ie < 9', // React doesn't support IE8 anyway
-                      ],
-                      flexbox: 'no-2009',
-                    }),
+                    require('postcss-cssnext'),
+                    require('postcss-import'),
+                    require('postcss-for')
                   ],
                 },
               },
             ],
+          },
+          {
+            test: /\.css$/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1
+                }
+              }
+            ]
           },
           {
             exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],

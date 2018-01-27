@@ -1,0 +1,14 @@
+@for $i from 5 to 20 by 5 {
+    :global(.f-mt$(i)) {
+        margin-top: $(i)px;
+    }
+    :global(.f-mr$(i)) {
+        margin-right: $(i)px;
+    }
+    :global(.f-mb$(i)) {
+        margin-bottom: $(i)px;
+    }
+    :global(.f-ml$(i)) {
+        margin-left: $(i)px;
+    }
+}
