@@ -11,6 +11,17 @@ export default class DevicesStore {
 
   @action
   getDevices() {
-    this.list = ipcRenderer.sendSync('get-devices');
+    const list = ipcRenderer.sendSync('get-devices');
+    this.list = list;
+    if (list.length === 0) {
+      this.current = null;
+    } else if (!this.current) {
+      this.current = list[0].serialNumber;
+    }
+  }
+
+  @action
+  setCurrentDevice(index) {
+    this.current = this.list[index].serialNumber;
   }
 }

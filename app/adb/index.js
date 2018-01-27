@@ -21,7 +21,10 @@ export default {
     const listBuffer = childProcess.execSync('adb devices');
     const list = listBuffer.toString().trim().split('\n');
     list.shift();
-    return list.map(el => {
+    return list.filter(el => {
+      // 过滤adb server启动时的信息
+      return !/^\*.+\*$/.test(el);
+    }).map(el => {
       const tmp = el.trim().split('\t');
       return {
         serialNumber: tmp[0],

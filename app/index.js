@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import url from 'url';
 
+import adb from './adb';
 import './ipc';
 
 let win;
@@ -27,11 +28,13 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   });
+
+  // start server
+  adb.startServer();
 }
 
 app.on('ready', createWindow);
 
-// 当全部窗口关闭时退出。
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
@@ -39,7 +42,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (win === null) {x
+  if (win === null) {
     createWindow()
   }
 });
