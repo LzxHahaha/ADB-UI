@@ -1,5 +1,3 @@
-'use strict';
-
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
@@ -28,7 +26,7 @@ const cssFilename = 'static/css/[name].[contenthash:8].css';
 
 const extractTextPluginOptions = shouldUseRelativeAssetPaths
   ? // Making sure that the publicPath goes back to to build folder.
-    { publicPath: Array(cssFilename.split('/').length).join('../') }
+  { publicPath: Array(cssFilename.split('/').length).join('../') }
   : {};
 
 module.exports = {
@@ -68,7 +66,7 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -91,7 +89,14 @@ module.exports = {
             loader: require.resolve('babel-loader'),
             options: {
               compact: true,
-              plugins: ['transform-object-rest-spread', 'transform-decorators-legacy']
+              plugins: [
+                'transform-object-rest-spread',
+                'transform-decorators-legacy',
+                [
+                  'import',
+                  { 'libraryName': 'antd', 'libraryDirectory': 'es', 'style': 'css' }
+                ]
+              ]
             },
           },
           {

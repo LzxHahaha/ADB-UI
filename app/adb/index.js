@@ -2,7 +2,7 @@ import childProcess from 'child_process';
 
 import Logcat from './Logcat';
 
-function exec(command, options) {
+function exec(command, options = {}) {
   const { encoding, start, end, ...other } = options;
   const buffer = childProcess.execSync(command, other);
   return buffer.toString(encoding, start, end);

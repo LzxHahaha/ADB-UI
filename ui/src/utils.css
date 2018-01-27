@@ -1,3 +1,26 @@
+html, body, :global(#app) {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-size: 14px;
+    background-color: #FAFAFA;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+}
+
+:global(.container) {
+    height: 100%;
+    padding: 20px;
+}
+
 @for $i from 5 to 20 by 5 {
     :global(.f-mt$(i)) {
         margin-top: $(i)px;
@@ -11,4 +34,32 @@
     :global(.f-ml$(i)) {
         margin-left: $(i)px;
     }
+
+    :global(.f-pd$(i)) {
+        padding: $(i)px;
+    }
+}
+
+:global(.tab-card-content) {
+    background-color: white;
+    overflow: auto;
+    border: 1px solid #e8e8e8;
+    border-top-width: 0;
+    margin-top: -16px;
+    padding: 16px 10px 10px;
+    height: 100%;
+}
+
+:global(.ant-tabs) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+:global(.ant-tabs-content) {
+    flex: 1;
+}
+
+:global(.ant-tabs-tabpane) {
+    height: 100%;
 }

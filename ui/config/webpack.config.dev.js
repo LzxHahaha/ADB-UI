@@ -1,5 +1,3 @@
-'use strict';
-
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 const webpack = require('webpack');
@@ -55,7 +53,7 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
+
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -79,7 +77,14 @@ module.exports = {
             loader: require.resolve('babel-loader'),
             options: {
               cacheDirectory: true,
-              plugins: ['transform-object-rest-spread', 'transform-decorators-legacy']
+              plugins: [
+                'transform-object-rest-spread',
+                'transform-decorators-legacy',
+                [
+                  'import',
+                  { 'libraryName': 'antd', 'libraryDirectory': 'es', 'style': 'css' }
+                ]
+              ]
             },
           },
           {

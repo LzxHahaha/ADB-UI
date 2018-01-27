@@ -1,9 +1,9 @@
 import { observable, action } from 'mobx';
-import { ipcRenderer } from 'electron';
+
+import { getDevices } from "../ipc/devices";
 
 export default class DevicesStore {
   @observable list = [];
-  @observable current = null;
 
   constructor(rootStore) {
     this.rootStore = rootStore;
@@ -11,17 +11,8 @@ export default class DevicesStore {
 
   @action
   getDevices() {
-    const list = ipcRenderer.sendSync('get-devices');
+    const list = getDevices();
     this.list = list;
-    if (list.length === 0) {
-      this.current = null;
-    } else if (!this.current) {
-      this.current = list[0].serialNumber;
-    }
-  }
-
-  @action
-  setCurrentDevice(index) {
-    this.current = this.list[index].serialNumber;
+    return list;
   }
 }
