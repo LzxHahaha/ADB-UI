@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Tabs } from 'antd';
 
-import router from './tabConfig';
+import router from './router';
 
 const TabPane = Tabs.TabPane;
 const Home = router.home;

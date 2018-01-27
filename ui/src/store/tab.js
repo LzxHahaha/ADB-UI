@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx';
 
-import router from '../tabConfig';
+import router from '../router';
 
 const keyCounter = {
   '/': 0
