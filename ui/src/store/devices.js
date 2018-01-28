@@ -12,6 +12,6 @@ export default class DevicesStore {
   @action
   async getDevices() {
     const list = await getDevices();
-    runInAction(() => this.list = list);
+    runInAction(() => this.list = list || []);
   }
 }

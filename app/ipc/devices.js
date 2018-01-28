@@ -1,7 +1,5 @@
-import { ipcMain } from 'electron';
+import listen from './listen';
 import adb from '../adb';
 
-ipcMain.on('get-devices', (event) => {
-  event.returnValue = adb.devices();
-});
+listen('get-devices', () => adb.devices());
 

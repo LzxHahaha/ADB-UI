@@ -20,7 +20,9 @@
     "electron-builder": "^19.55.2"
   },
   "dependencies": {
-    "fbemitter": "^2.1.1"
+    "babel-polyfill": "^6.26.0",
+    "fbemitter": "^2.1.1",
+    "uuid": "^3.2.1"
   },
   "build": {
     "appId": "adb.ui.lzxhahaha"

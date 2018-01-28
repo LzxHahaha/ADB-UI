@@ -25,10 +25,7 @@ export default class Recorder extends React.Component {
   @observable recording = false;
 
   onCaptureClick = () => {
-    screenCapture({
-      path: this.capPath,
-      filename: `screencap_${+new Date()}.png`
-    });
+    screenCapture(this.capPath, `screencap_${+new Date()}.png`);
   };
 
   onShowCaptureClick = () => {

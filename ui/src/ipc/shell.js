@@ -3,7 +3,7 @@ import { EventEmitter } from 'fbemitter';
 
 import { sendEvent } from './base';
 
-export const screenCapture = (path) => sendEvent('screen-cap', path);
+export const screenCapture = (path, filename) => sendEvent('screen-cap', { data: { path, filename } });
 
 export const startRecord = (device, path, filename, time = 180) => {
   const id = ipcRenderer.sendSync('start-record', {
@@ -19,4 +19,4 @@ export const startRecord = (device, path, filename, time = 180) => {
   return { id, emitter };
 };
 
-export const stopRecord = (id) => sendEvent('stop-record', id);
+export const stopRecord = (id) => sendEvent('stop-record', { data: { id } });
