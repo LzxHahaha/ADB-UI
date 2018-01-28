@@ -1,7 +1,7 @@
 import React from 'react';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Card } from 'antd';
 
 import { startLog, stopLog } from '../ipc/logcat';
 import { exportFile } from '../ipc/system';
@@ -36,14 +36,16 @@ export default class Logcat extends React.Component {
     return (
       <div className={styles.container}>
         <div className="f-mb10">
-          {
-            this.logging
-              ? <Button type="primary" onClick={this.onStopClick}>停止捕获</Button>
-              : <Button type="primary" onClick={this.onStartClick}>开始捕获</Button>
-          }
+            <Card title="过滤条件" type="inner">
+            {
+              this.logging
+                ? <Button type="primary" onClick={this.onStopClick}>停止捕获</Button>
+                : <Button type="primary" onClick={this.onStartClick}>开始捕获</Button>
+            }
 
-          <Button className="f-ml10" onClick={() => this.log = ''}>清空日志</Button>
-          <Button className="f-ml10" onClick={this.onExportClick}>导出</Button>
+            <Button className="f-ml10" onClick={() => this.log = ''}>清空日志</Button>
+            <Button className="f-ml10" onClick={this.onExportClick}>导出</Button>
+          </Card>
         </div>
         <div className={styles.logger}>
           <pre>

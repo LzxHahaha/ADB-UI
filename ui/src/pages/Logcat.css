@@ -9,7 +9,7 @@
     background-color: #2b2b2b;
     color: white;
     border-radius: 5px;
-    overflow-y: scroll;
+    overflow-y: auto;
     word-break: break-all;
     padding: 5px 10px;
 }
