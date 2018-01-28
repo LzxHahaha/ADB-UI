@@ -1,6 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import path from 'path';
 import url from 'url';
+
+import packageInfo from '../package.json';
 
 import adb from './adb';
 import './ipc';
@@ -23,7 +25,22 @@ function createWindow () {
     win.webContents.openDevTools();
   }
 
-  // win.setMenu(null);
+  const menu = Menu.buildFromTemplate([
+    {
+      label: '帮助',
+      submenu: [
+        {
+          label: '问题反馈',
+          click: () => shell.openExternal('https://github.com/LzxHahaha/ADB-UI/issues')
+        },
+        {
+          label: '当前版本：' + packageInfo.version
+        }
+      ]
+    }
+  ]);
+  Menu.setApplicationMenu(menu);
+  win.setMenu(null);
 
   win.on('closed', () => {
     win = null

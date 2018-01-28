@@ -33,7 +33,7 @@ export default {
     });
   },
 
-  logcat() {
-    return new Logcat();
+  logcat(options) {
+    return new Logcat(options);
   }
 };

@@ -2,9 +2,7 @@ import { observable, action } from 'mobx';
 
 import router from '../router';
 
-const keyCounter = {
-  '/': 0
-};
+const keyCounter = {};
 
 export default class DevicesStore {
   @observable tab = 'home';
@@ -44,7 +42,7 @@ export default class DevicesStore {
 
     this.tabs.splice(index, 1);
     if (this.tab === key) {
-      this.tab = this.tabs[index - 1].key;
+      this.tab = (this.tabs[index - 1] || { key: 'home' }).key;
     }
   }
 }

@@ -2,10 +2,23 @@ import childProcess from 'child_process';
 import { EventEmitter } from 'fbemitter';
 
 export default class Logcat {
-  constructor() {
+  constructor(options = {}) {
     this._process = null;
     this._emitter = new EventEmitter();
     this._events = {};
+
+    const { device } = options;
+    this.device = device;
+  }
+
+  getArgs() {
+    const args = ['logcat'];
+    if (this.device) {
+      args.push('-s');
+      args.push(this.device);
+    }
+
+    return args;
   }
 
   start() {
@@ -14,20 +27,18 @@ export default class Logcat {
       return;
     }
 
-    this._process = childProcess.spawn('adb', ['logcat']);
+    this._process = childProcess.spawn('adb', this.getArgs());
 
     this._process.stdout.on('data', (data) => {
-      console.log(`output: ${data}`);
-      this._emitter.emit('log', data);
+      this._emitter.emit('log', data.toString());
     });
 
     this._process.stderr.on('data', (data) => {
-      console.log(`error: ${data}`);
-      this._emitter.emit('error', data);
+      this._emitter.emit('error', data.toString());
     });
 
     this._process.on('close', (code) => {
-      console.log(`close: ${code}`);
+      this._emitter.emit('close', code);
       this._process = null;
       this._emitter = new EventEmitter();
       this._events = {};

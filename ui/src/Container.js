@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
-import { Tabs } from 'antd';
+import { Tabs, Icon } from 'antd';
 
 import router from './router';
 
@@ -33,7 +33,7 @@ export default class Container extends React.Component {
       <div className="container">
         <Tabs activeKey={this.props.tab} type="editable-card" hideAdd onChange={this.onTabChange}
               onEdit={this.onTabEdit}>
-          <TabPane key="home" tab="首页" closable={false}>
+          <TabPane key="home" tab={<span><Icon type="smile" />首页</span>} closable={false}>
             <div className="tab-card-content">
               <Home />
             </div>

@@ -16,9 +16,44 @@ h1, h2, h3, h4, h5, h6, p {
     margin: 0;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+    width: 5px;
+    background-color: #CCCCCC;
+    border-radius: 6px;
+}
+::-webkit-scrollbar-track-piece {
+    background-color: #fff;
+    -webkit-border-radius: 0;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 50px;
+    background-color: #999;
+    -webkit-border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    border: 2px solid #fff;
+}
+::-webkit-scrollbar-thumb:hover {
+    height: 50px;
+    background-color: #9f9f9f;
+    -webkit-border-radius: 4px;
+}
+
+:global(.ant-confirm-content) {
+    word-break: break-all;
+}
+
+:global(.status-bar) {
+    display: none;
+}
+
 :global(.container) {
-    height: 100%;
-    padding: 20px;
+    height: 95%;
+    padding: 20px 20px 0;
 }
 
 @for $i from 5 to 20 by 5 {
