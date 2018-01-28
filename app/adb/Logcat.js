@@ -1,23 +1,16 @@
 import childProcess from 'child_process';
-import { EventEmitter } from 'fbemitter';
 
-export default class Logcat {
-  constructor(options = {}) {
-    this._process = null;
-    this._emitter = new EventEmitter();
-    this._events = {};
+import AdbBase from './AdbBase';
 
-    const { device } = options;
-    this.device = device;
+export default class Logcat extends AdbBase {
+  constructor(options) {
+    super(options);
+    this._baseArgs = ['logcat'];
   }
 
-  getArgs() {
-    const args = ['logcat'];
-    if (this.device) {
-      args.push('-s');
-      args.push(this.device);
-    }
-
+  _getExtraArgs() {
+    const args = [];
+    // ...
     return args;
   }
 
@@ -39,35 +32,7 @@ export default class Logcat {
 
     this._process.on('close', (code) => {
       this._emitter.emit('close', code);
-      this._process = null;
-      this._emitter = new EventEmitter();
-      this._events = {};
+      this.reset();
     });
-  }
-
-  // send ctrl-c
-  stop() {
-    this._process.stdin.write('\x03');
-  }
-
-  restart() {
-    this.kill();
-    this.start();
-  }
-
-  kill() {
-    this._process.kill();
-  }
-
-  on(event, cb) {
-    this._events[event] = this._emitter.addListener(event, cb);
-  }
-
-  removeEvnet(event) {
-    if (!this._events[event]) {
-      return;
-    }
-
-    this._events[event].remove();
   }
 }

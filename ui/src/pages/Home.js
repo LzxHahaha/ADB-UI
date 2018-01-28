@@ -19,8 +19,8 @@ export default class Home extends React.Component {
     this.props.rootStore.devices.getDevices();
   }
 
-  onRefreshClick = () => {
-    this.props.rootStore.devices.getDevices();
+  onRefreshClick = async () => {
+    await this.props.rootStore.devices.getDevices();
     message.success('刷新成功');
   };
 
@@ -39,7 +39,13 @@ export default class Home extends React.Component {
   };
 
   onRecordClick = () => {
-
+    this.props.rootStore.tab.push({
+      key: 'recorder',
+      tab: `步骤录制 - ${this.current}`,
+      props: {
+        device: this.current
+      }
+    });
   };
 
   render() {

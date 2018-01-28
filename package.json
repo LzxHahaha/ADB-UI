@@ -1,6 +1,6 @@
 {
   "name": "adb-ui",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "bin/index.js",
   "scripts": {
@@ -15,7 +15,8 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "electron": "^1.7.11"
+    "electron": "^1.7.11",
+    "electron-builder": "^19.55.2"
   },
   "dependencies": {
     "fbemitter": "^2.1.1"

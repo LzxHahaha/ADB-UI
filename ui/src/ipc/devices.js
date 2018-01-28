@@ -1,3 +1,3 @@
-import { ipcRenderer } from 'electron';
+import { sendEvent } from './base';
 
-export const getDevices = () => ipcRenderer.sendSync('get-devices');
+export const getDevices = () => sendEvent('get-devices');

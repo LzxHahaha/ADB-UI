@@ -2,12 +2,11 @@ import { ipcMain, shell, clipboard } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
+import _ from '../utils';
+
 ipcMain.on('write-file', (event, arg) => {
   const { content, filename } = arg;
-  let basePath = arg.path;
-  if (!path.isAbsolute(basePath)) {
-    basePath = path.resolve(__dirname, basePath)
-  }
+  let basePath = _.getAbsolutePath(arg.path);
   if (!fs.existsSync(basePath)) {
     fs.mkdirSync(basePath);
   }
@@ -23,4 +22,8 @@ ipcMain.on('copy', (event, arg) => {
 
 ipcMain.on('read-copy', (event, arg) => {
   clipboard.readText(arg);
+});
+
+ipcMain.on('open-folder', (event, basePath) => {
+  shell.showItemInFolder(_.getAbsolutePath(basePath));
 });

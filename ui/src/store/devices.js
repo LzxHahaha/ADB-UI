@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 
 import { getDevices } from "../ipc/devices";
 
@@ -10,9 +10,8 @@ export default class DevicesStore {
   }
 
   @action
-  getDevices() {
-    const list = getDevices();
-    this.list = list;
-    return list;
+  async getDevices() {
+    const list = await getDevices();
+    runInAction(() => this.list = list);
   }
 }

@@ -1,5 +1,8 @@
 import childProcess from 'child_process';
+import _p from 'path';
+import fs from 'fs';
 
+import _ from '../utils';
 import Logcat from './Logcat';
 
 function exec(command, options = {}) {
@@ -18,8 +21,8 @@ export default {
   },
 
   devices() {
-    const listBuffer = childProcess.execSync('adb devices');
-    const list = listBuffer.toString().trim().split('\n');
+    const listStr = exec('adb devices');
+    const list = listStr.trim().split('\n');
     list.shift();
     return list.filter(el => {
       // 过滤adb server启动时的信息
@@ -35,5 +38,16 @@ export default {
 
   logcat(options) {
     return new Logcat(options);
+  },
+
+  screenCapture(basePath, filename) {
+    basePath = _.getAbsolutePath(basePath);
+    if (!fs.existsSync(basePath)) {
+      fs.mkdirSync(basePath);
+    }
+    if (!/\.\w+$/.test(filename)) {
+      filename += '.png';
+    }
+    exec(`adb exec-out screencap -p > ${_p.join(basePath, filename)}`);
   }
 };
