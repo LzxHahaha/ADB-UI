@@ -4,9 +4,10 @@
   "description": "",
   "main": "bin/index.js",
   "scripts": {
-    "start": "electron .",
+    "start": "set NODE_ENV=development&& electron .",
     "build": "babel -d bin/ app/",
-    "clean": "rm -rf ./bin"
+    "clean": "rm -rf ./bin",
+    "dist": "electron-builder"
   },
   "author": "LzxHahaha",
   "license": "MIT",
@@ -20,5 +21,8 @@
   },
   "dependencies": {
     "fbemitter": "^2.1.1"
+  },
+  "build": {
+    "appId": "adb.ui.lzxhahaha"
   }
 }

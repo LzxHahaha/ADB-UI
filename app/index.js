@@ -14,15 +14,15 @@ function createWindow () {
     title: 'ADB UI'
   });
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'development') {
+    win.loadURL('http://localhost:3000/');
+    win.webContents.openDevTools();
+  } else {
     win.loadURL(url.format({
       pathname: path.join(__dirname, './resources/index.html'),
       protocol: 'file:',
       slashes: true
     }));
-  } else {
-    win.loadURL('http://localhost:3000/');
-    win.webContents.openDevTools();
   }
 
   const menu = Menu.buildFromTemplate([

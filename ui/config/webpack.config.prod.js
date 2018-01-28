@@ -31,6 +31,7 @@ const extractTextPluginOptions = shouldUseRelativeAssetPaths
 
 module.exports = {
   bail: true,
+  target: 'electron-main',
   devtool: shouldUseSourceMap ? 'source-map' : false,
   entry: [require.resolve('./polyfills'), paths.appIndexJs],
   output: {
