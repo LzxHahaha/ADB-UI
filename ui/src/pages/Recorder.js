@@ -1,13 +1,14 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-import { Row, Col, Card, Button, Radio, Input, Icon } from 'antd'
+import { Row, Col, Card, Radio, Button, Input, Icon, Form } from 'antd'
 
 import { screenCapture } from '../ipc/shell';
 import { openFolder } from '../ipc/system';
 
-const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
+const FormItem = Form.Item;
 
 const recordWay = [
   { key: 'screenCap', label: '屏幕截图' },
@@ -20,6 +21,7 @@ export default class Recorder extends React.Component {
   @observable recordWay = recordWay[0].key;
   @observable capPath = './capture';
 
+  @observable recordPhonePath = '/sdcard';
   @observable recordPath = './record';
   @observable recordTime = 180;
   @observable recording = false;
@@ -60,20 +62,34 @@ export default class Recorder extends React.Component {
         );
       case 'screenRecord':
         return (
-          <Row gutter={10}>
-            <Col span={6}>
-              <Input prefix={<Icon type="folder" />} value={this.recordPath} placeholder="请输入保存路径"
-                     onChange={e => this.recordPath = e.target.value} />
-            </Col>
-            <Col span={6}>
-              <Input prefix={<Icon type="clock-circle-o" />} value={this.recordTime} placeholder="录制时长（秒）"
-                     onChange={this.onRecordTimeChange} />
-            </Col>
-            <Col span={12}>
-              <Button type="primary" icon="camera" onClick={this.onRecordClick}>开始录制</Button>
-              <Button className="f-ml10" onClick={this.onShowRecordClick}>查看录像</Button>
-            </Col>
-          </Row>
+          <Form layout="inline">
+            <Row gutter={10}>
+              <Col span={6}>
+                <FormItem label="手机存储路径">
+                  <Input prefix={<Icon type="mobile" />} value={this.recordPhonePath} placeholder="请输入手机上的保存路径"
+                         onChange={e => this.recordPath = e.target.value} />
+                </FormItem>
+              </Col>
+              <Col span={6}>
+                <FormItem label="电脑存储路径">
+                  <Input prefix={<Icon type="folder" />} value={this.recordPath} placeholder="请输入保存路径"
+                         onChange={e => this.recordPath = e.target.value} />
+                </FormItem>
+              </Col>
+              <Col span={6}>
+                <FormItem label="录制时长">
+                  <Input prefix={<Icon type="clock-circle-o" />} value={this.recordTime} placeholder="录制时长"
+                         onChange={this.onRecordTimeChange} addonAfter="秒"/>
+                </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Button type="primary" icon="camera" onClick={this.onRecordClick}>开始录制</Button>
+                <Button className="f-ml10" onClick={this.onShowRecordClick}>查看录像</Button>
+              </Col>
+            </Row>
+          </Form>
         );
       case 'eventListener':
         return '~~~';

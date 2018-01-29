@@ -1,3 +1,5 @@
+/* 全局样式定义 */
+
 html, body, :global(#app) {
     margin: 0;
     padding: 0;
@@ -43,13 +45,17 @@ h1, h2, h3, h4, h5, h6, p {
     -webkit-border-radius: 4px;
 }
 
+/* ant design 覆盖 */
+
 :global(.ant-confirm-content) {
     word-break: break-all;
 }
 
-:global(.status-bar) {
-    display: none;
+:global(.ant-row + .ant-row) {
+    margin-top: 10px;
 }
+
+/* 工具类 */
 
 :global(.container) {
     height: 95%;
