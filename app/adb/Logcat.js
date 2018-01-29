@@ -8,12 +8,6 @@ export default class Logcat extends AdbBase {
     this._baseArgs = ['logcat'];
   }
 
-  _getExtraArgs() {
-    const args = [];
-    // ...
-    return args;
-  }
-
   start() {
     if (this._process) {
       console.warn('Already started.');

@@ -23,6 +23,8 @@ export default class AdbBase {
     return args.concat(this._getExtraArgs());
   }
 
+  start() {}
+
   reset() {
     this._process = null;
     this._emitter = new EventEmitter();
@@ -30,7 +32,7 @@ export default class AdbBase {
   }
 
   // send ctrl-c
-  stop() {
+  break() {
     this._process.stdin.write('\x03');
   }
 
@@ -40,6 +42,9 @@ export default class AdbBase {
   }
 
   kill() {
+    if (!this._process) {
+      return;
+    }
     this._process.kill();
   }
 

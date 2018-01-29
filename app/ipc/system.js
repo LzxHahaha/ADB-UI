@@ -6,7 +6,6 @@ import { listen } from './listen';
 import _ from '../utils';
 
 listen('write-file', (data) => {
-  console.log(data);
   const { content, filename } = data;
   let basePath = _.getAbsolutePath(data.path);
   if (!fs.existsSync(basePath)) {

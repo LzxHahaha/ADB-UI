@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Button, Modal, Card } from 'antd';
 
-import { startLog, stopLog } from '../ipc/logcat';
+import { startLog } from '../ipc/logcat';
 import { exportFile } from '../ipc/system';
 
 import styles from './Logcat.css';
@@ -12,19 +12,33 @@ import styles from './Logcat.css';
 export default class Logcat extends React.Component {
   @observable logging = false;
   @observable log = '';
-  loggerId = null;
+  logClient = null;
+
+  componentWillUnmount() {
+    if (this.logClient) {
+      this.logClient.disconnect();
+    }
+  }
 
   onStartClick = () => {
+    if (this.logging) {
+      return;
+    }
     this.logging = true;
-    const { id, emitter } = startLog(this.props.device);
-    this.loggerId = id;
-    emitter.addListener('log', (data) => this.log += data);
+    if (!this.logClient) {
+      this.logClient = startLog(this.props.device);
+    }
+    this.logClient.on('log', (data) => this.log += data);
+    this.logClient.start();
   };
 
   onStopClick = () => {
-    stopLog(this.loggerId);
-    this.loggerId = null;
+    if (!this.logging) {
+      return;
+    }
+    this.logClient.stop();
     this.logging = false;
+    this.log += '\n\n================================\n\n'
   };
 
   onExportClick = () => {

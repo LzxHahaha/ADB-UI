@@ -21,17 +21,18 @@ export const sendEvent = (eventName, options = {}) => {
 
 export const sendLongEvent = (eventName, options = {}) => {
   const { data } = options;
-  const id = uuid.v1();
-  const client =  new LongEventClient(id, eventName, data);
+  const client =  new LongEventClient(eventName, data);
   client.connect();
   return client;
 };
 
 class LongEventClient {
-  constructor(id, eventName, data) {
-    this.id = id;
+  constructor(eventName, data) {
+    this.id = uuid.v1();
     this.eventName = eventName;
     this.startData = data;
+
+    this.events = new Map();
   }
 
   _getEventName(event) {
@@ -39,7 +40,7 @@ class LongEventClient {
   }
 
   connect() {
-    ipcRenderer.send(this.eventName, { id, data: this.startData });
+    ipcRenderer.send(this.eventName, { id: this.id, data: this.startData });
   }
 
   start() {
@@ -48,23 +49,46 @@ class LongEventClient {
 
   stop() {
     ipcRenderer.send(this._getEventName('stop'));
+    this.clearEvents();
   }
 
   disconnect() {
     ipcRenderer.send(this._getEventName('disconnect'));
+    this.clearEvents();
   }
 
   on(event, handler) {
+    let count = this.events.get(event);
+    if (!count) {
+      this.events.set(event, 1);
+    } else {
+      this.events.set(event, count + 1);
+    }
+
     const listener = (e, response) => handler(response);
     ipcRenderer.on(this._getEventName(event), listener);
     return listener;
   }
 
   remove(event, listener) {
+    let count = this.events.get(event);
+    if (!count) {
+      return;
+    }
+    count -= 1;
+    if (count === 0) {
+      this.events.delete(event);
+    }
+
     ipcRenderer.removeListener(this._getEventName(event), listener);
   }
 
   removeAll(event) {
+    this.events.delete(event);
     ipcRenderer.removeAllListeners(this._getEventName(event));
+  }
+
+  clearEvents() {
+    this.events.forEach((v, k) => this.removeAll(k));
   }
 }

@@ -14,7 +14,7 @@ export const listen = (eventName, handler) => {
   });
 };
 
-export const listenLong = (eventName) => {
+export const listenLong = (eventName, initHandler) => {
   return new Promise((resolve) => {
     ipcMain.on(eventName, (e, args) => {
       const {id, data} = args;
@@ -22,16 +22,19 @@ export const listenLong = (eventName) => {
         eventName, id, data,
         sender: e.sender
       });
+      initHandler(server);
+
       ipcMain.on(server._getEventName('start'), () => server.onStart(server.startData));
       ipcMain.on(server._getEventName('stop'), () => server.onStop());
-      ipcMain.on(server._getEventName('disconnect'), () => {
-        ['start', 'stop', 'disconnect'].forEach(el => ipcMain.removeAllListeners(server._getEventName(el)));
+      ipcMain.once(server._getEventName('disconnect'), () => {
+        server.onStop();
         server.onDisconnect();
+        ['start', 'stop'].forEach(el => ipcMain.removeAllListeners(server._getEventName(el)));
       });
-      resolve(server);
-    })
+      resolve();
+    });
   });
-}
+};
 
 class LongEventServer {
   constructor({ eventName, id, data, sender }) {
