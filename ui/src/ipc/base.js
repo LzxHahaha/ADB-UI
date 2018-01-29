@@ -8,10 +8,9 @@ export const sendEvent = (eventName, options = {}) => {
   const responseEvent = `${eventName}_res_${id}`;
 
   return new Promise((resolve, reject) => {
-    ipcRenderer.on(responseEvent, (event, response) => {
+    ipcRenderer.once(responseEvent, (event, response) => {
       if (response.code === 200) {
         resolve(response.data);
-        ipcRenderer.removeAllListeners(responseEvent);
       } else {
         reject(response.data);
       }
