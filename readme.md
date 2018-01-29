@@ -4,7 +4,7 @@
 
 ```
 ├─ app      electron client code
-└─ pages    ui code
+└─ ui       ui code
 ```
 
 ### install
