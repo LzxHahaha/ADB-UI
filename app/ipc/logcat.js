@@ -1,7 +1,25 @@
 import { ipcMain } from 'electron';
 import adb from '../adb';
 
+import { listenLong } from './listen';
+
 const loggers = {};
+
+(async () => {
+  const eventServer = await listenLong('log');
+  eventServer.onStart = (data) => {
+    this.logger = adb.logcat(data);
+
+    logger.on('log', (data) => {
+      this.emit('log', { data });
+    });
+  };
+
+  eventServer.onStop = () => {
+    this.logger.kill();
+  };
+})();
+
 
 ipcMain.on('start-log', (event, device) => {
   const now = +new Date();

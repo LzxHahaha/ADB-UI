@@ -2,7 +2,7 @@ import { shell, clipboard } from 'electron';
 import fs from 'fs';
 import _p from 'path';
 
-import listen from './listen';
+import { listen } from './listen';
 import _ from '../utils';
 
 listen('write-file', (data) => {
