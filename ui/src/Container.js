@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Tabs, Icon } from 'antd';
 
+import FindBox from './components/FindBox';
 import router from './router';
 
 const TabPane = Tabs.TabPane;
@@ -48,6 +49,7 @@ export default class Container extends React.Component {
             ))
           }
         </Tabs>
+        <FindBox />
       </div>
     );
   }

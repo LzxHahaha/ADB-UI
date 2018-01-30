@@ -28,7 +28,18 @@ export default class Logcat extends React.Component {
     if (!this.logClient) {
       this.logClient = startLog(this.props.device);
     }
-    this.logClient.on('log', (data) => this.log += data);
+    let timer = null;
+    this.logClient.on('log', (data) => {
+      this.log += data;
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
+        this.loggerEnd.scrollIntoView();
+        clearTimeout(timer);
+        timer = null;
+      }, 100);
+    });
     this.logClient.start();
   };
 
@@ -38,7 +49,7 @@ export default class Logcat extends React.Component {
     }
     this.logClient.stop();
     this.logging = false;
-    this.log += '\n\n================================\n\n'
+    this.log += '\n================================\n\n'
   };
 
   onExportClick = () => {
@@ -61,10 +72,11 @@ export default class Logcat extends React.Component {
             <Button className="f-ml10" onClick={this.onExportClick}>导出</Button>
           </Card>
         </div>
-        <div className={styles.logger}>
-          <pre>
+        <div className={styles.loggerContainer}>
+          <pre className={styles.logger}>
             {this.log || '无日志'}
           </pre>
+          <span ref={r => this.loggerEnd = r}></span>
         </div>
       </div>
     );

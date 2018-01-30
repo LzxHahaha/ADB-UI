@@ -28,6 +28,16 @@ function createWindow () {
 
   const menu = Menu.buildFromTemplate([
     {
+      label: '功能',
+      submenu: [
+        {
+          label: '查找',
+          accelerator: 'CmdOrCtrl+F',
+          click: () => win.webContents.send('find')
+        }
+      ]
+    },
+    {
       label: '帮助',
       submenu: [
         {

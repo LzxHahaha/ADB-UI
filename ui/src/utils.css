@@ -28,11 +28,11 @@ h1, h2, h3, h4, h5, h6, p {
     border-radius: 6px;
 }
 ::-webkit-scrollbar-track-piece {
-    background-color: #fff;
+    background-color: transparent;
     -webkit-border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:vertical {
-    height: 50px;
+    /*height: 50px;*/
     background-color: #999;
     -webkit-border-radius: 4px;
     outline: 2px solid #fff;
@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5, h6, p {
     border: 2px solid #fff;
 }
 ::-webkit-scrollbar-thumb:hover {
-    height: 50px;
+    /*height: 50px;*/
     background-color: #9f9f9f;
     -webkit-border-radius: 4px;
 }
@@ -58,8 +58,8 @@ h1, h2, h3, h4, h5, h6, p {
 /* 工具类 */
 
 :global(.container) {
-    height: 95%;
-    padding: 20px 20px 0;
+    height: 100%;
+    padding: 20px;
 }
 
 @for $i from 5 to 20 by 5 {

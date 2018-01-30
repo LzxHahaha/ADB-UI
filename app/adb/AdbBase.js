@@ -14,13 +14,13 @@ export default class AdbBase {
   _getExtraArgs() { return []; }
 
   getArgs() {
-    const args = [...this._baseArgs];
+    const args = [];
     if (this.device) {
       args.push('-s');
       args.push(this.device);
     }
 
-    return args.concat(this._getExtraArgs());
+    return args.concat(this._baseArgs).concat(this._getExtraArgs());
   }
 
   start() {}
