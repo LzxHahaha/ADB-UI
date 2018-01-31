@@ -4,6 +4,7 @@ import fs from 'fs';
 
 import _ from '../utils';
 import Logcat from './Logcat';
+import ScreenRecord from './ScreenRecord';
 
 function exec(command, options = {}) {
   const { encoding, start, end, ...other } = options;
@@ -49,5 +50,9 @@ export default {
       filename += '.png';
     }
     exec(`adb exec-out screencap -p > ${_p.join(basePath, filename)}`);
+  },
+
+  screenRecord(options) {
+    return new ScreenRecord(options);
   }
 };

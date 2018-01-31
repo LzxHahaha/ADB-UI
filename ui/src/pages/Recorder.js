@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Row, Col, Card, Radio, Button, Input, Icon, Form } from 'antd'
 
-import { screenCapture } from '../ipc/shell';
+import { screenCapture, startRecord } from '../ipc/shell';
 import { openFolder } from '../ipc/system';
 
 const RadioGroup = Radio.Group;
@@ -21,10 +21,12 @@ export default class Recorder extends React.Component {
   @observable recordWay = recordWay[0].key;
   @observable capPath = './capture';
 
-  @observable recordPhonePath = '/sdcard';
+  @observable recordPhonePath = '/data';
   @observable recordPath = './record';
   @observable recordTime = 180;
   @observable recording = false;
+
+  client = null;
 
   onCaptureClick = () => {
     screenCapture(this.capPath, `screencap_${+new Date()}.png`);
@@ -41,7 +43,17 @@ export default class Recorder extends React.Component {
     this.recordTime = value;
   };
 
-  onRecordClick = () => {};
+  onRecordClick = () => {
+    if (this.recording) {
+      return;
+    }
+    this.recording = true;
+    this.client = startRecord(this.props.device, this.recordPhonePath, this.recordPath, `record_${+new Date()}.mp4`, this.recordTime);
+
+    this.client.start();
+  };
+
+  onStopRecordClick = () => {};
 
   onShowRecordClick = () => {};
 
@@ -85,7 +97,11 @@ export default class Recorder extends React.Component {
             </Row>
             <Row>
               <Col span={24}>
-                <Button type="primary" icon="camera" onClick={this.onRecordClick}>开始录制</Button>
+                {
+                  this.recording
+                    ? (<Button type="primary" icon="camera" onClick={this.onSt}>停止录制</Button>)
+                    : (<Button type="primary" icon="camera" onClick={this.onRecordClick}>开始录制</Button>)
+                }
                 <Button className="f-ml10" onClick={this.onShowRecordClick}>查看录像</Button>
               </Col>
             </Row>
