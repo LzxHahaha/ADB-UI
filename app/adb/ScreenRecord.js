@@ -1,6 +1,6 @@
-import childProcess from 'child_process';
 import _p from 'path';
 import fs from 'fs';
+import childProcess from 'child_process';
 
 import _ from '../utils';
 import AdbBase from './AdbBase';
@@ -22,26 +22,21 @@ export default class ScreenRecord extends AdbBase {
     return [this._tempFile, `--time=${this._time}`];
   }
 
+  onStdData(data) {
+    // 这个指令讲道理不会有输出，有的话都是错误
+    this.emit('exception', data);
+  }
+
+  onClose(code) {
+    childProcess.execSync(`adb pull ${this._tempFile} ${this._outputPath}/.`);
+
+    super.onClose(code);
+  }
+
   start() {
     if (!fs.existsSync(this._outputPath)) {
       fs.mkdirSync(this._outputPath);
     }
-
-    this._process = childProcess.spawn('adb', this.getArgs());
-
-    this._process.stdout.on('data', (data) => {
-      // 这个指令讲道理不会有输出，有的话都是错误
-      this._emitter.emit('exception', data.toString());
-    });
-
-    this._process.stderr.on('data', (data) => {
-      this._emitter.emit('error', data.toString());
-    });
-
-    this._process.on('close', (code) => {
-      this._emitter.emit('end', code);
-      childProcess.execSync(`adb pull ${this._tempFile} ${this._outputPath}/.`);
-      this.reset();
-    });
+    super.start();
   }
 }

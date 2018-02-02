@@ -1,3 +1,4 @@
+import childProcess from 'child_process';
 import { EventEmitter } from 'fbemitter';
 
 export default class AdbBase {
@@ -11,9 +12,7 @@ export default class AdbBase {
     this.device = device;
   }
 
-  _getExtraArgs() { return []; }
-
-  getArgs() {
+  _getArgs() {
     const args = [];
     if (this.device) {
       args.push('-s');
@@ -23,7 +22,16 @@ export default class AdbBase {
     return args.concat(this._baseArgs).concat(this._getExtraArgs());
   }
 
-  start() {}
+  start() {
+    if (this._process) {
+      return false;
+    }
+    this._process = childProcess.spawn('adb', this._getArgs());
+
+    this._process.stdout.on('data', (data) => this.onStdData(data.toString()));
+    this._process.stderr.on('data', (data) => this.onStdError(data.toString()));
+    this._process.on('close', (code) => this.onClose(code));
+  }
 
   reset() {
     this._process = null;
@@ -46,6 +54,7 @@ export default class AdbBase {
       return;
     }
     this._process.kill();
+    this.reset();
   }
 
   on(event, cb) {
@@ -58,5 +67,24 @@ export default class AdbBase {
     }
 
     this._events[event].remove();
+  }
+
+  emit(event, data) {
+    return this._emitter.emit(event, data);
+  }
+
+  // 以下是用来覆盖的函数
+
+  _getExtraArgs() { return []; }
+
+  onStdData(data) {
+    this.emit('data', data);
+  }
+  onStdError(data) {
+    this.emit('error', data);
+  }
+  onClose(code) {
+    this.emit('close', code);
+    this.reset();
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
 
-import './utils.css';
+import './global.css';
 
 import RootStore from './store';
 

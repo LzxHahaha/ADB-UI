@@ -49,7 +49,9 @@ export default class Logcat extends React.Component {
     }
     this.logClient.stop();
     this.logging = false;
-    this.log += '\n================================\n\n'
+    if (this.log) {
+      this.log += '\n================================\n\n';
+    }
   };
 
   onExportClick = () => {
