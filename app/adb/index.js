@@ -49,7 +49,9 @@ export default {
     if (!/\.\w+$/.test(filename)) {
       filename += '.png';
     }
-    exec(`adb exec-out screencap -p > ${_p.join(basePath, filename)}`);
+    const name = _p.join(basePath, filename);
+    exec(`adb exec-out screencap -p > ${name}`);
+    return name;
   },
 
   screenRecord(options) {

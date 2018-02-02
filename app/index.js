@@ -14,6 +14,7 @@ function createWindow () {
   win = new BrowserWindow({
     title: 'ADB UI',
     webPreferences: {
+      webSecurity: false,
       nodeIntegrationInWorker: true
     }
   });

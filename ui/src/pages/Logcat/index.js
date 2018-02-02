@@ -21,7 +21,7 @@ const levels = {
   'W': { color: '#faad14', level: 4 },
   'E': { color: '#ffa39e', level: 5 },
   'F': { color: '#f5222d', level: 6 },
-  'S': { color: '#000', level: 7 },
+  'S': { color: '#2b2b2b', level: 7 },
 };
 
 @observer

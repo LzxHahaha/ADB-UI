@@ -20,6 +20,7 @@ const recordWay = [
 export default class Recorder extends React.Component {
   @observable recordWay = recordWay[0].key;
   @observable capPath = './capture';
+  @observable capImages = [];
 
   @observable recordPhonePath = '/data';
   @observable recordPath = './record';
@@ -34,9 +35,11 @@ export default class Recorder extends React.Component {
   latestCap = '';
   latestVideo = '';
 
-  onCaptureClick = () => {
+  onCaptureClick = async () => {
     this.latestCap = `screencap_${+new Date()}.png`;
-    screenCapture(this.capPath, this.latestCap);
+    const file = await screenCapture(this.capPath, this.latestCap);
+    console.log(file);
+    this.capImages.push(`file://${file}`);
   };
 
   onShowCaptureClick = () => {
@@ -87,16 +90,32 @@ export default class Recorder extends React.Component {
 
   renderScreenCap() {
     return (
-      <Row gutter={10}>
-        <Col span={6}>
-          <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
-                 onChange={e => this.capPath = e.target.value} />
-        </Col>
-        <Col span={18}>
-          <Button type="primary" icon="camera" onClick={this.onCaptureClick}>截图</Button>
-          <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图</Button>
-        </Col>
-      </Row>
+      <div>
+        <Row gutter={10}>
+          <Col span={6}>
+            <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
+                   onChange={e => this.capPath = e.target.value} />
+          </Col>
+          <Col span={18}>
+            <Button type="primary" icon="camera" onClick={this.onCaptureClick}>截图</Button>
+            <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图</Button>
+          </Col>
+        </Row>
+        {
+          this.capImages.length ? (
+            <Row gutter={10}>
+              {
+                this.capImages.map((el, index) => (
+                  <Col span={4} key={index}>
+                    <Card hoverable cover={<img src={el} />} >
+                    </Card>
+                  </Col>
+                ))
+              }
+            </Row>
+          ) : null
+        }
+      </div>
     );
   }
 
