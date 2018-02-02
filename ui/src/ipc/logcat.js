@@ -1,5 +1,5 @@
 import { sendLongEvent } from './base';
 
-export const startLog = (device) => {
-  return sendLongEvent('log', { data: { device } });
+export const startLog = ({ device, format, filters }) => {
+  return sendLongEvent('log', { data: { device, format, filters } });
 };

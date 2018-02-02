@@ -1,20 +1,20 @@
 import childProcess from 'child_process';
 import { EventEmitter } from 'fbemitter';
 
-export default class AdbBase {
-  constructor(options = {}) {
-    this._process = null;
-    this._emitter = new EventEmitter();
-    this._events = {};
-    this._baseArgs = [];
+      export default class AdbBase {
+        constructor(options = {}) {
+          this._process = null;
+          this._emitter = new EventEmitter();
+          this._events = {};
+          this._baseArgs = [];
 
-    const { device } = options;
-    this.device = device;
-  }
+          const { device = '' } = options;
+          this.device = device;
+        }
 
-  _getArgs() {
-    const args = [];
-    if (this.device) {
+        _getArgs() {
+          let args = [];
+          if (this.device) {
       args.push('-s');
       args.push(this.device);
     }
@@ -26,7 +26,7 @@ export default class AdbBase {
     if (this._process) {
       return false;
     }
-    this._process = childProcess.spawn('adb', this._getArgs());
+    this._process = childProcess.exec(`adb ${this._getArgs().join(' ')}`);
 
     this._process.stdout.on('data', (data) => this.onStdData(data.toString()));
     this._process.stderr.on('data', (data) => this.onStdError(data.toString()));

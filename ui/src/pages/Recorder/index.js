@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Row, Col, Card, Radio, Button, Input, Icon, Form, Modal, notification } from 'antd'
 
-import { screenCapture, startRecord } from '../ipc/shell';
-import { exportFile, openFolder } from '../ipc/system';
+import { screenCapture, startRecord } from '../../ipc/shell';
+import { exportFile, openFolder } from '../../ipc/system';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
