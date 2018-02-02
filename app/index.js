@@ -12,7 +12,10 @@ let win;
 
 function createWindow () {
   win = new BrowserWindow({
-    title: 'ADB UI'
+    title: 'ADB UI',
+    webPreferences: {
+      nodeIntegrationInWorker: true
+    }
   });
 
   if (process.env.NODE_ENV === 'development') {
