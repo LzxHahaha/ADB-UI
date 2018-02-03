@@ -3,8 +3,8 @@ import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
 import { Tabs, Icon } from 'antd';
 
-import FindBox from './components/FindBox';
-import router from './router';
+import FindBox from '../../components/FindBox';
+import router from '../../router';
 
 const TabPane = Tabs.TabPane;
 const Home = router.home;

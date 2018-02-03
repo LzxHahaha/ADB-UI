@@ -12,6 +12,12 @@ function exec(command, options = {}) {
   return buffer.toString(encoding, start, end);
 }
 
+function adbCmd(device, args) {
+  const base = device ? `adb -s ${device}` : 'adb';
+  const _arg = Array.isArray(args) ? args.join(' ') : args;
+  return exec(`${base} ${_arg}`);
+}
+
 export default {
   startServer() {
     return exec('adb start-server');
@@ -56,5 +62,27 @@ export default {
 
   screenRecord(options) {
     return new ScreenRecord(options);
+  },
+
+  info(device) {
+    const cmd = (args) => adbCmd(device, args);
+
+    const model = cmd('shell getprop ro.product.model');
+    const androidId = cmd('shell settings get secure android_id');
+    const systemVersion = cmd('shell getprop ro.build.version.release');
+    const screenSize = {};
+    for (let i of cmd('shell wm density').split('\n')) {
+      let match = i.match(/^(Physical|Override) density: (\d+)/);
+      if (match) {
+        screenSize[match[0]] = +match[1];
+      }
+    }
+
+    return {
+      model,
+      screenSize,
+      androidId,
+      systemVersion
+    };
   }
 };

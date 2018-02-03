@@ -54,7 +54,7 @@ function createWindow () {
       ]
     }
   ]);
-  Menu.setApplicationMenu(menu);
+  // Menu.setApplicationMenu(menu);
 
   win.on('closed', () => {
     win = null

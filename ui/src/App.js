@@ -1,26 +1,24 @@
 import React from 'react';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'mobx-react';
 
 import './global.css';
 
 import RootStore from './store';
 
-import AppContainer from './Container';
+import Startup from './pages/Startup';
+import Device from './pages/Device';
 
 export default class App extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //
-  //   // 开发时刷新使用
-  //   if (window.location.pathname !== '/') {
-  //     window.location = '/';
-  //   }
-  // }
-
   render() {
     return (
       <Provider store={new RootStore()}>
-        <AppContainer />
+        <Router>
+          <Switch>
+            <Route path="/device/:device" component={Device} />
+            <Route component={Startup} />
+          </Switch>
+        </Router>
       </Provider>
     );
   }

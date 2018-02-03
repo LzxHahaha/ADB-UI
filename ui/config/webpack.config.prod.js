@@ -102,6 +102,7 @@ module.exports = {
           },
           {
             test: /\.css$/,
+            include: paths.appSrc,
             loader: ExtractTextPlugin.extract(
               Object.assign(
                 {
@@ -118,6 +119,8 @@ module.exports = {
                         importLoaders: 1,
                         minimize: true,
                         sourceMap: shouldUseSourceMap,
+                        modules: true,
+                        localIdentName: '[path][name]__[local]--[hash:base64:5]'
                       },
                     },
                     {
@@ -137,6 +140,18 @@ module.exports = {
                 extractTextPluginOptions
               )
             ),
+          },
+          {
+            test: /\.css$/,
+            use: [
+              require.resolve('style-loader'),
+              {
+                loader: require.resolve('css-loader'),
+                options: {
+                  importLoaders: 1
+                }
+              }
+            ]
           },
           {
             loader: require.resolve('file-loader'),
