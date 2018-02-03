@@ -2,7 +2,6 @@ import React from 'react';
 import { Modal, Form, Input, Select } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import PropTypes from 'prop-types';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -19,12 +18,6 @@ const levelSource = [
 
 @observer
 export default class NewFilterModal extends React.Component {
-  static propTypes = {
-    visible: PropTypes.bool,
-    onOk: PropTypes.func,
-    onCancel: PropTypes.func
-  };
-
   @observable tag = '*';
   @observable level = levelSource[0].value;
 
@@ -35,10 +28,6 @@ export default class NewFilterModal extends React.Component {
     });
   };
 
-  onCancel = () => {
-    this.props.onCancel && this.props.onCancel();
-  };
-
   afterClose = () => {
     this.tag = '*';
     this.level = levelSource[0].value;
@@ -47,7 +36,7 @@ export default class NewFilterModal extends React.Component {
   render() {
     return (
       <Modal title="新增过滤条件" okText="添加" cancelText="取消" visible={this.props.visible}
-             onOk={this.onOk} onCancel={this.onCancel} afterClose={this.afterClose}>
+             onOk={this.onOk} onCancel={this.props.onCancel} afterClose={this.afterClose}>
         <Form>
           <FormItem label="Tag">
             <Input value={this.tag} onChange={e => this.tag = e.target.value} />

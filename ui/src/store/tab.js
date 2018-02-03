@@ -2,8 +2,6 @@ import { observable, action } from 'mobx';
 
 import router from '../router';
 
-const keyCounter = {};
-
 export default class DevicesStore {
   @observable tab = 'home';
   @observable tabs = [];
@@ -19,16 +17,12 @@ export default class DevicesStore {
 
   @action
   push(tab) {
-    if (keyCounter[tab.key]) {
-      keyCounter[tab.key] += 1;
-    } else {
-      keyCounter[tab.key] = 1;
+    if (this.tabs.find(el => el.key === tab.key)) {
+      this.tab = tab.key;
+      return;
     }
 
     tab.component = router[tab.key];
-
-    tab.key = `${tab.key}?__v=${keyCounter[tab.key]}`;
-
     this.tabs.push(tab);
     this.tab = tab.key;
   }

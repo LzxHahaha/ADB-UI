@@ -92,7 +92,7 @@ export default class Recorder extends React.Component {
   renderScreenCap() {
     return (
       <div>
-        <Row gutter={10}>
+        <Row gutter={20}>
           <Col span={6}>
             <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
                    onChange={e => this.capPath = e.target.value} />
@@ -108,7 +108,7 @@ export default class Recorder extends React.Component {
               <Tooltip placement="top" title="在文件夹中查看">
                 <div className={styles.capPreview}>
                   <img src={`file://${el}`} alt={el} className={styles.capImage} onClick={() => openFolder(el)} />
-                  <span className={styles.capTitle}>{el.split(/[\\\/]/g).pop()}</span>
+                  <span className={styles.capTitle}>{el.split(/[\\/]/g).pop()}</span>
                 </div>
               </Tooltip>
             )) : null
@@ -120,8 +120,8 @@ export default class Recorder extends React.Component {
 
   renderScreenRecord() {
     return (
-      <Form layout="inline">
-        <Row gutter={10}>
+      <Form>
+        <Row gutter={20}>
           <Col span={6}>
             <FormItem label="手机存储路径">
               <Input prefix={<Icon type="mobile" />} value={this.recordPhonePath} placeholder="请输入手机上的保存路径"

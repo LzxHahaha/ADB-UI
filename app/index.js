@@ -7,12 +7,15 @@ import packageInfo from '../package.json';
 
 import adb from './adb';
 import './ipc';
+import { listen } from './ipc/listen';
 
 let win;
 
 function createWindow () {
   win = new BrowserWindow({
     title: 'ADB UI',
+    frame: false,
+    titleBarStyle: 'hidden',
     webPreferences: {
       webSecurity: false,
       nodeIntegrationInWorker: true
@@ -62,6 +65,7 @@ function createWindow () {
 
   // start server
   adb.startServer();
+  listen('quit', () => app.quit());
 }
 
 app.on('ready', createWindow);

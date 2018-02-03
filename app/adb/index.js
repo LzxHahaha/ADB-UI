@@ -9,13 +9,17 @@ import ScreenRecord from './ScreenRecord';
 function exec(command, options = {}) {
   const { encoding, start, end, ...other } = options;
   const buffer = childProcess.execSync(command, other);
-  return buffer.toString(encoding, start, end);
+  return buffer.toString(encoding, start, end).trim();
 }
 
 function adbCmd(device, args) {
   const base = device ? `adb -s ${device}` : 'adb';
   const _arg = Array.isArray(args) ? args.join(' ') : args;
   return exec(`${base} ${_arg}`);
+}
+
+function getCmd(device) {
+  return (args) => adbCmd(device, args);
 }
 
 export default {
@@ -64,25 +68,41 @@ export default {
     return new ScreenRecord(options);
   },
 
-  info(device) {
-    const cmd = (args) => adbCmd(device, args);
+  baseInfo(device) {
+    const cmd = getCmd(device);
 
     const model = cmd('shell getprop ro.product.model');
     const androidId = cmd('shell settings get secure android_id');
     const systemVersion = cmd('shell getprop ro.build.version.release');
     const screenSize = {};
-    for (let i of cmd('shell wm density').split('\n')) {
-      let match = i.match(/^(Physical|Override) density: (\d+)/);
+    for (let i of cmd('shell wm size').split('\n')) {
+      let match = i.match(/^(Physical|Override) size: (\d+x\d+)/);
       if (match) {
-        screenSize[match[0]] = +match[1];
+        screenSize[match[1].toLowerCase()] = match[2];
+      }
+    }
+    const screenDensity = {};
+    for (let i of cmd('shell wm size').split('\n')) {
+      let match = i.match(/^(Physical|density) size: (\d+)/);
+      if (match) {
+        screenDensity[match[1].toLowerCase()] = match[2];
       }
     }
 
     return {
       model,
       screenSize,
+      screenDensity,
       androidId,
       systemVersion
     };
+  },
+
+  cpuInfo(device) {
+    return adbCmd(device, 'shell cat /proc/cpuinfo');
+  },
+
+  memoryInfo(device) {
+    return adbCmd(device, 'shell cat /proc/meminfo');
   }
 };

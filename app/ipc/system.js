@@ -1,4 +1,4 @@
-import { shell, clipboard } from 'electron';
+import { shell } from 'electron';
 import fs from 'fs';
 import _p from 'path';
 

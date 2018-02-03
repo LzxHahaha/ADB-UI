@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
-import { Button, List, message } from 'antd';
+import { Affix, Button, List, message, Tooltip } from 'antd';
 import { remote } from 'electron';
+
+import { quit } from '../../ipc/system';
 
 import styles from './index.css';
 
@@ -22,15 +24,22 @@ export default class Startup extends React.Component {
     await this.props.rootStore.devices.getDevices();
   }
 
+  minimize() {
+    const window = remote.getCurrentWindow();
+    window.minimize();
+  }
+
   onRefreshClick = async () => {
     await this.props.rootStore.devices.getDevices();
-    message.success('刷新成功');
+    message.success('设备列表已刷新');
   };
 
   onDeviceClick(id) {
     const BrowserWindow = remote.BrowserWindow;
     let win = new BrowserWindow({
       title: 'ADB UI',
+      width: 1200,
+      height: 850,
       webPreferences: {
         webSecurity: false,
         nodeIntegrationInWorker: true
@@ -43,7 +52,6 @@ export default class Startup extends React.Component {
   renderListHeader = () => (
     <div className={styles.title}>
       <span className={styles.titleText}>设备列表</span>
-      <Button size="small" type="primary" onClick={this.onRefreshClick} shape="circle" icon="sync" />
     </div>
   );
 
@@ -62,11 +70,15 @@ export default class Startup extends React.Component {
         <img src={logoImage} alt="logo" />
         <List
           className={styles.list}
-          header={this.renderListHeader()}
           bordered
           dataSource={this.props.list}
           renderItem={this.renderListItem}
         />
+        <div className={styles.buttons}>
+          <Button shape="circle" icon="sync" size="small" type="primary" onClick={this.onRefreshClick} />
+          <Button shape="circle" icon="minus" size="small" onClick={this.minimize} />
+          <Button shape="circle" icon="logout" type="danger" size="small" onClick={quit} />
+        </div>
       </div>
     );
   }

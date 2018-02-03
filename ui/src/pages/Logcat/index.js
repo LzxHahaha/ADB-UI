@@ -106,16 +106,16 @@ export default class Logcat extends React.Component {
       <div className={styles.container}>
         <div className="f-mb10">
           <Card title="过滤条件" type="inner">
-            <Form layout="inline">
-              <Row gutter={10}>
-                <Col md={4} sm={8} xs={24}>
+            <Form>
+              <Row gutter={20}>
+                <Col xl={6} lg={8} md={10} sm={12} xs={24}>
                   <FormItem label="日志格式">
                     <Select value={this.format} onChange={v => this.format = v}>
                       {logFormatSource.map(el => <Option key={el} value={el}>{el}</Option>)}
                     </Select>
                   </FormItem>
                 </Col>
-                <Col md={20} sm={16} xs={24}>
+                <Col xl={18} lg={16} md={14} sm={12} xs={24}>
                   <FormItem label="过滤条件">
                     <Button icon="plus" size="small" className="f-mr10" onClick={() => this.filterModalVisible = true} />
                     {

@@ -1,5 +1,7 @@
 import { sendEvent } from './base';
 
+export const quit = () => sendEvent('quit');
+
 export const exportFile = (content, filename, path = './logs') => {
   filename = filename || `${+new Date()}.log`;
   return sendEvent('write-file', { data: { content, path, filename } });
