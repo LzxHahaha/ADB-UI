@@ -165,9 +165,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.optimize.ProvidePlugin({
-      'process.env.NODE_ENV': 'production'
-    }),
     new InterpolateHtmlPlugin(env.raw),
     new HtmlWebpackPlugin({
       inject: true,

@@ -25,7 +25,7 @@ export default class NewFilterModal extends React.Component {
   @observable apps = [];
 
   componentWillMount() {
-    this.refreshAppSource();
+    setTimeout(this.refreshAppSource, 100);
   }
 
   refreshAppSource = async (name = '') => {

@@ -25,13 +25,15 @@
     "uuid": "^3.2.1"
   },
   "build": {
-    "appId": "adb.ui.lzxhahaha",
+    "appId": "com.lzxhahaha.adbui",
+    "productName": "ADB UI",
     "win": {
       "icon": "resources/icon.ico"
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "license": "./LICENSE"
     }
   }
 }
