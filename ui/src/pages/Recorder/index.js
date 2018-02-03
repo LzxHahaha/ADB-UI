@@ -1,10 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-import { Row, Col, Card, Radio, Button, Input, Icon, Form, Modal, notification } from 'antd'
+import { Row, Col, Card, Radio, Button, Input, Icon, Form, Modal, Tooltip, notification } from 'antd'
 
 import { screenCapture, startRecord } from '../../ipc/shell';
 import { exportFile, openFolder } from '../../ipc/system';
+
+import styles from './index.css';
 
 const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
@@ -38,8 +40,7 @@ export default class Recorder extends React.Component {
   onCaptureClick = async () => {
     this.latestCap = `screencap_${+new Date()}.png`;
     const file = await screenCapture(this.capPath, this.latestCap);
-    console.log(file);
-    this.capImages.push(`file://${file}`);
+    this.capImages.push(file);
   };
 
   onShowCaptureClick = () => {
@@ -101,20 +102,18 @@ export default class Recorder extends React.Component {
             <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图</Button>
           </Col>
         </Row>
-        {
-          this.capImages.length ? (
-            <Row gutter={10}>
-              {
-                this.capImages.map((el, index) => (
-                  <Col span={4} key={index}>
-                    <Card hoverable cover={<img src={el} />} >
-                    </Card>
-                  </Col>
-                ))
-              }
-            </Row>
-          ) : null
-        }
+        <div className={styles.capContainer}>
+          {
+            this.capImages.length ? this.capImages.map(el => (
+              <Tooltip placement="top" title="在文件夹中查看">
+                <div className={styles.capPreview}>
+                  <img src={`file://${el}`} alt={el} className={styles.capImage} onClick={() => openFolder(el)} />
+                  <span className={styles.capTitle}>{el.split(/[\\\/]/g).pop()}</span>
+                </div>
+              </Tooltip>
+            )) : null
+          }
+        </div>
       </div>
     );
   }
