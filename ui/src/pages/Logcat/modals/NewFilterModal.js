@@ -1,7 +1,9 @@
 import React from 'react';
-import { Modal, Form, Input, Select } from 'antd';
+import { Modal, Form, Select } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+
+import { getAppList } from '../../../ipc/shell';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -18,28 +20,38 @@ const levelSource = [
 
 @observer
 export default class NewFilterModal extends React.Component {
-  @observable tag = '*';
+  @observable tag = [];
   @observable level = levelSource[0].value;
+  @observable apps = [];
+
+  componentWillMount() {
+    this.refreshAppSource();
+  }
+
+  refreshAppSource = async (name = '') => {
+    this.apps = ['*'].concat(await getAppList(this.props.device, name) || []);
+  };
 
   onOk = () => {
     this.props.onOk && this.props.onOk({
-      tag: this.tag,
+      tags: this.tag,
       level: this.level
     });
   };
 
-  afterClose = () => {
-    this.tag = '*';
-    this.level = levelSource[0].value;
+  onAppNameChange = async (value) => {
+    this.tag = value;
   };
 
   render() {
     return (
       <Modal title="新增过滤条件" okText="添加" cancelText="取消" visible={this.props.visible}
-             onOk={this.onOk} onCancel={this.props.onCancel} afterClose={this.afterClose}>
+             onOk={this.onOk} onCancel={this.props.onCancel} afterClose={this.afterClose} destroyOnClose>
         <Form>
           <FormItem label="Tag">
-            <Input value={this.tag} onChange={e => this.tag = e.target.value} />
+            <Select mode="multiple" onChange={this.onAppNameChange} showArrow>
+              {this.apps.map(el => <Option key={el} value={el}>{el}</Option>)}
+            </Select>
           </FormItem>
           <FormItem label="级别">
             <Select value={this.level} onChange={v => this.level = v}>

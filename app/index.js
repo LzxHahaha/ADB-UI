@@ -16,10 +16,15 @@ function createWindow () {
     title: 'ADB UI',
     frame: false,
     titleBarStyle: 'hidden',
+    backgroundColor: '#FAFAFA',
+    show: false,
     webPreferences: {
       webSecurity: false,
       nodeIntegrationInWorker: true
     }
+  });
+  win.once('ready-to-show', () => {
+    win.show()
   });
 
   if (process.env.NODE_ENV === 'development') {
@@ -57,7 +62,9 @@ function createWindow () {
       ]
     }
   ]);
-  // Menu.setApplicationMenu(menu);
+  if (process.env.NODE_ENV !== 'development') {
+    Menu.setApplicationMenu(menu);
+  }
 
   win.on('closed', () => {
     win = null

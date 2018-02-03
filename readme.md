@@ -37,7 +37,7 @@ $ cd ./ui
 $ yarn run build
 $ cd ..
 $ yarn run build
-$ yarn run dist
+$ yarn run pack
 ```
 
 setup.exe will generate to `dist/`.

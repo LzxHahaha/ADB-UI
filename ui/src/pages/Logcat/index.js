@@ -1,5 +1,5 @@
 import React from 'react';
-import { observable } from 'mobx';
+import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react';
 import { Button, Modal, Card, Row, Col, Form, Select, Tag } from 'antd';
 
@@ -33,6 +33,10 @@ export default class Logcat extends React.Component {
   @observable logging = false;
   @observable log = '';
   logClient = null;
+
+  @computed get tagSet() {
+    return new Set(this.filters.map(el => el.tag));
+  }
 
   componentWillUnmount() {
     if (this.logClient) {
@@ -88,16 +92,8 @@ export default class Logcat extends React.Component {
   };
 
   onFilterAdd = (data) => {
-    const item = this.filters.find(el => el.tag === data.tag);
-    if (item) {
-      const itemLevel = levels[item.level].level;
-      const newLevel = levels[data.level].level;
-      if (newLevel < itemLevel) {
-        item.level = data.level;
-      }
-    } else {
-      this.filters.push(data);
-    }
+    const tags = data.tags.filter(el => !this.tagSet.has(el));
+    this.filters = this.filters.concat(tags.map(tag => ({ tag, level: data.level })));
     this.filterModalVisible = false;
   };
 
@@ -120,7 +116,7 @@ export default class Logcat extends React.Component {
                     <Button icon="plus" size="small" className="f-mr10" onClick={() => this.filterModalVisible = true} />
                     {
                       this.filters.map((el, index) => (
-                        <Tag key={`${el.tag}:${el.level}_${index}`} closable color={levels[el.level].color}
+                        <Tag key={`${el.tag}:${el.level}`} closable color={levels[el.level].color}
                              onClose={() => this.filters.splice(index, 1)}>
                           {el.tag}:{el.level}
                         </Tag>
@@ -149,7 +145,7 @@ export default class Logcat extends React.Component {
             {this.log || '无日志'}
           </pre>
         </div>
-        <NewFilterModal visible={this.filterModalVisible} onOk={this.onFilterAdd} onCancel={() => this.filterModalVisible = false} />
+        <NewFilterModal device={this.props.device} visible={this.filterModalVisible} onOk={this.onFilterAdd} onCancel={() => this.filterModalVisible = false} />
       </div>
     );
   }

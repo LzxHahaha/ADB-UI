@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { autorun } from 'mobx';
-import { Affix, Button, List, message, Tooltip } from 'antd';
+import { Button, List, message } from 'antd';
 import { remote } from 'electron';
 
 import { quit } from '../../ipc/system';

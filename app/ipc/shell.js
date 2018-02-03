@@ -23,3 +23,5 @@ listenLong('screen-record', (eventServer) => {
     logger = null;
   };
 });
+
+listen('app-list', (data) => adb.appList(data.device, data.name));

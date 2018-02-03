@@ -7,3 +7,5 @@ export const startRecord = (device, phonePath, path, filename, time = 180) => {
     data: { device, phonePath, path, filename, time }
   });
 };
+
+export const getAppList = (device, name) => sendEvent('app-list', { data: { device, name } });

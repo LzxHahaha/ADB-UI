@@ -14,8 +14,7 @@ function exec(command, options = {}) {
 
 function adbCmd(device, args) {
   const base = device ? `adb -s ${device}` : 'adb';
-  const _arg = Array.isArray(args) ? args.join(' ') : args;
-  return exec(`${base} ${_arg}`);
+  return exec(`${base} ${args}`);
 }
 
 function getCmd(device) {
@@ -104,5 +103,11 @@ export default {
 
   memoryInfo(device) {
     return adbCmd(device, 'shell cat /proc/meminfo');
+  },
+
+  appList(device, name) {
+    name = name ? ` "${name}"` : '';
+    const list = adbCmd(device, `shell pm list packages${name}`).split('\n');
+    return list.map(el => el.trim().split(':')[1]);
   }
 };
