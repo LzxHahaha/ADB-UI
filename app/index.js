@@ -1,13 +1,15 @@
 import 'babel-polyfill';
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 import path from 'path';
 import url from 'url';
 
 import packageInfo from '../package.json';
 
 import adb from './adb';
+import server from './server';
 import './ipc';
 import { listen } from './ipc/listen';
+import { getUsablePort } from './utils';
 
 let win;
 
@@ -27,16 +29,9 @@ function createWindow () {
     win.show()
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    win.loadURL('http://localhost:3000/');
-    win.webContents.openDevTools();
-  } else {
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, './resources/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
-  }
+  getUsablePort().then(port => server.listen(port, () => {
+    console.log(`listening on port: ${port}`);
+  }));
 
   const menu = Menu.buildFromTemplate([
     // {
@@ -62,13 +57,20 @@ function createWindow () {
       ]
     }
   ]);
-  if (process.env.NODE_ENV !== 'development') {
+
+  if (process.env.NODE_ENV === 'development') {
+    win.loadURL('http://localhost:3000/');
+    win.webContents.openDevTools();
     Menu.setApplicationMenu(menu);
+  } else {
+    win.loadURL(url.format({
+      pathname: path.join(__dirname, './resources/index.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
   }
 
-  win.on('closed', () => {
-    win = null
-  });
+  win.on('closed', () => win = null);
 
   // start server
   adb.startServer();
