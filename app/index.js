@@ -1,5 +1,5 @@
 import 'babel-polyfill';
-import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import path from 'path';
 import url from 'url';
 
@@ -13,7 +13,7 @@ import { getUsablePort } from './utils';
 
 let win;
 
-function createWindow () {
+app.on('ready', () => {
   win = new BrowserWindow({
     title: 'ADB UI',
     frame: false,
@@ -25,14 +25,9 @@ function createWindow () {
       nodeIntegrationInWorker: true
     }
   });
-  win.once('ready-to-show', () => {
-    win.show()
-  });
+  win.once('ready-to-show', () => win.show());
 
-  getUsablePort().then(port => server.listen(port, () => {
-    console.log(`listening on port: ${port}`);
-  }));
-
+  // electron config
   const menu = Menu.buildFromTemplate([
     // {
     //   label: '功能',
@@ -57,7 +52,6 @@ function createWindow () {
       ]
     }
   ]);
-
   if (process.env.NODE_ENV === 'development') {
     win.loadURL('http://localhost:3000/');
     win.webContents.openDevTools();
@@ -69,24 +63,24 @@ function createWindow () {
       slashes: true
     }));
   }
-
   win.on('closed', () => win = null);
 
-  // start server
+  // start adb server
   adb.startServer();
-  listen('quit', () => app.quit());
-}
+  // start koa server
+  // TODO: cluster
+  getUsablePort().then(port => server.listen(port, (err) => {
+    if (err) {
+      console.error(err);
+    }
+    console.log(`listening on port: ${port}`);
+  }));
 
-app.on('ready', createWindow);
+  listen('quit', () => app.quit());
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
-  }
-});
-
-app.on('activate', () => {
-  if (win === null) {
-    createWindow()
   }
 });
