@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { message } from 'antd';
 import uuid from 'uuid';
 
 export const sendEvent = (eventName, options = {}) => {
@@ -12,6 +13,7 @@ export const sendEvent = (eventName, options = {}) => {
       if (response.code === 200) {
         resolve(response.data);
       } else {
+        message.error(response.data);
         reject(response.data);
       }
     });
