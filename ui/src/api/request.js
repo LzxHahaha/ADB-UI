@@ -7,14 +7,14 @@ let port = 9512;
 ipcRenderer.on('api-port', data => port = +data);
 
 function encode(val) {
-    return encodeURIComponent(val).
-    replace(/%40/gi, '@').
-    replace(/%3A/gi, ':').
-    replace(/%24/g, '$').
-    replace(/%2C/gi, ',').
-    replace(/%20/g, '+').
-    replace(/%5B/gi, '[').
-    replace(/%5D/gi, ']');
+    return encodeURIComponent(val)
+      .replace(/%40/gi, '@')
+      .replace(/%3A/gi, ':')
+      .replace(/%24/g, '$')
+      .replace(/%2C/gi, ',')
+      .replace(/%20/g, '+')
+      .replace(/%5B/gi, '[')
+      .replace(/%5D/gi, ']');
 }
 
 function emptyFilter(params) {
@@ -60,9 +60,11 @@ async function request(url, data, options) {
     const { params, ...other } = data;
     url = buildURL(url, params);
 
-    let body = JSON.stringify(emptyFilter(other));
-    if (body) {
+    if (options.method === 'POST') {
+      let body = JSON.stringify(emptyFilter(other));
+      if (body) {
         options.body = body;
+      }
     }
 
     const result = await fetch(url, options);
