@@ -52,11 +52,12 @@ app.on('ready', () => {
       ]
     }
   ]);
+
   if (process.env.NODE_ENV === 'development') {
     win.loadURL('http://localhost:3000/');
     win.webContents.openDevTools();
-    Menu.setApplicationMenu(menu);
   } else {
+    Menu.setApplicationMenu(menu);
     win.loadURL(url.format({
       pathname: path.join(__dirname, './resources/index.html'),
       protocol: 'file:',

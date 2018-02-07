@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Card, Button, Form, Row, Col, message } from 'antd';
 
-import { getDeviceInfo, getCpuInfo, getMemInfo } from '../../ipc/devices';
+import { getDeviceInfo, getCpuInfo, getMemInfo } from '../../api/devices';
 import InfoModal from './modals/InfoModal';
 
 @observer
@@ -23,6 +23,7 @@ export default class Info extends React.Component {
     try {
       this.loading = true;
       this.info = await getDeviceInfo(this.props.device);
+      console.log(this.info);
     } finally {
       this.loading = false;
     }

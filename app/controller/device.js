@@ -10,7 +10,7 @@ router.get('/list', async () => {
 
 router.get('/info/base', async ctx => {
   const { device } = ctx.query;
-  return await adb.cpuInfo(device);
+  return await adb.baseInfo(device);
 });
 
 router.get('/info/cpu', async ctx => {
