@@ -9,7 +9,7 @@ router.use('/adb/*', async (ctx, next) => {
     const data = await next();
     ctx.body = JSON.stringify({ code: 200, data });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     ctx.body = JSON.stringify({ code: err.code || 500, message: err.message || 'Unknown error.' });
   }
 });

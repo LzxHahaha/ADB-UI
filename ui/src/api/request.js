@@ -3,7 +3,7 @@ import { ipcRenderer } from 'electron';
 import { message } from 'antd';
 
 const baseURL = 'http://127.0.0.1';
-let port = 9512;
+let port = ipcRenderer.sendSync('get-api-port');
 ipcRenderer.on('api-port', data => port = +data);
 
 function encode(val) {
@@ -53,7 +53,7 @@ function buildURL(url, params) {
     }
     url += parts.join('&');
   }
-  return `${baseURL}:${port}${url}`;
+  return url;
 }
 
 async function request(url, data, options) {
@@ -67,7 +67,7 @@ async function request(url, data, options) {
     }
   }
 
-  const result = await fetch(url, options);
+  const result = await fetch(`${baseURL}:${port}${url}`, options);
   const json = await result.json();
   if (json.code === 200) {
     return json.data;

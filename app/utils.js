@@ -28,7 +28,7 @@ export const portUsable = (port) => {
 };
 
 export const getUsablePort = async (port) => {
-  port = +port || 9512;
+  port = +port || 2333;
   while (!await portUsable(port)) {
     ++port;
   }
