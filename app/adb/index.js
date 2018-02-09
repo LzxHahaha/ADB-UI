@@ -6,10 +6,15 @@ import _ from '../utils';
 import Logcat from './Logcat';
 import ScreenRecord from './ScreenRecord';
 
-function exec(command, options = {}) {
-  const { encoding, start, end, ...other } = options;
-  const buffer = childProcess.execSync(command, other);
-  return buffer.toString(encoding, start, end).trim();
+function exec(command) {
+  return new Promise((resolve, reject) => {
+    childProcess.exec(command, (err, stdout) => {
+      if (err) {
+        return reject(err);
+      }
+      return resolve(stdout.toString().trim());
+    });
+  });
 }
 
 function adbCmd(device, args) {
@@ -30,8 +35,8 @@ export default {
     return exec('adb kill-server');
   },
 
-  devices() {
-    const listStr = exec('adb devices');
+  async devices() {
+    const listStr = await exec('adb devices');
     const list = listStr.trim().split('\n');
     list.shift();
     return list.filter(el => {
@@ -50,7 +55,9 @@ export default {
     return new Logcat(options);
   },
 
-  screenCapture(basePath, filename) {
+  asy
+
+  nc screenCapture(basePath, filename) {
     basePath = _.getAbsolutePath(basePath);
     if (!fs.existsSync(basePath)) {
       fs.mkdirSync(basePath);
@@ -59,7 +66,7 @@ export default {
       filename += '.png';
     }
     const name = _p.join(basePath, filename);
-    exec(`adb exec-out screencap -p > ${name}`);
+    await exec(`adb exec-out screencap -p > ${name}`);
     return name;
   },
 
