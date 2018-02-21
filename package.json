@@ -22,9 +22,6 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "fbemitter": "^2.1.1",
-    "koa": "^2.4.1",
-    "koa-bodyparser": "^4.2.0",
-    "koa-router": "^7.4.0",
     "uuid": "^3.2.1"
   },
   "build": {

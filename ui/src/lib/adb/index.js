@@ -27,14 +27,6 @@ function getCmd(device) {
 }
 
 export default {
-  startServer() {
-    return exec('adb start-server');
-  },
-
-  killServer() {
-    return exec('adb kill-server');
-  },
-
   async devices() {
     const listStr = await exec('adb devices');
     const list = listStr.trim().split('\n');
@@ -55,9 +47,7 @@ export default {
     return new Logcat(options);
   },
 
-  asy
-
-  nc screenCapture(basePath, filename) {
+  async screenCapture(basePath, filename) {
     basePath = _.getAbsolutePath(basePath);
     if (!fs.existsSync(basePath)) {
       fs.mkdirSync(basePath);
@@ -74,21 +64,21 @@ export default {
     return new ScreenRecord(options);
   },
 
-  baseInfo(device) {
+  async baseInfo(device) {
     const cmd = getCmd(device);
 
-    const model = cmd('shell getprop ro.product.model');
-    const androidId = cmd('shell settings get secure android_id');
-    const systemVersion = cmd('shell getprop ro.build.version.release');
+    const model = await cmd('shell getprop ro.product.model');
+    const androidId = await cmd('shell settings get secure android_id');
+    const systemVersion = await cmd('shell getprop ro.build.version.release');
     const screenSize = {};
-    for (let i of cmd('shell wm size').split('\n')) {
+    for (let i of (await cmd('shell wm size')).split('\n')) {
       let match = i.match(/^(Physical|Override) size: (\d+x\d+)/);
       if (match) {
         screenSize[match[1].toLowerCase()] = match[2];
       }
     }
     const screenDensity = {};
-    for (let i of cmd('shell wm size').split('\n')) {
+    for (let i of (await cmd('shell wm size')).split('\n')) {
       let match = i.match(/^(Physical|density) size: (\d+)/);
       if (match) {
         screenDensity[match[1].toLowerCase()] = match[2];

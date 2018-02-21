@@ -1,6 +1,6 @@
 import { observable, action, runInAction } from 'mobx';
 
-import { getDevices } from "../api/devices";
+import { getDevices } from "../native/devices";
 
 export default class DevicesStore {
   @observable list = [];
