@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const recordWay = [
   { key: 'screenCap', label: '屏幕截图' },
   { key: 'screenRecord', label: '屏幕录像' },
-  // { key: 'eventListener', label: '事件监听' }
+  { key: 'eventListener', label: '事件监听' }
 ];
 
 @observer
@@ -68,7 +68,7 @@ export default class Recorder extends React.Component {
       time: this.recordTime
     });
     this.recordClient.on('exception', msg => {
-      notification.error(msg);
+      msg && notification.error(msg);
       this.onStopRecordClick();
     });
     this.recordClient.on('close', () => this.onStopRecordClick());
@@ -86,13 +86,20 @@ export default class Recorder extends React.Component {
   };
 
   onShowRecordClick = () => {
-    alert('...');
     openFolder(`${this.recordPath}/${this.latestVideo}`);
   };
 
   onExportEventClick = () => {
     const filePath = exportFile(this.log, `adb_events_${+new Date()}.log`);
     Modal.success({ title: '导出成功', content: `记录已保存到${filePath}` });
+  };
+
+  onStartClick = () => {
+    
+  };
+
+  onStopClick = () => {
+
   };
 
   renderScreenCap() {
