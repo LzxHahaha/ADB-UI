@@ -28,7 +28,11 @@ export default class ScreenRecord extends AdbBase {
   }
 
   onClose(code) {
-    childProcess.execSync(`adb pull ${this._tempFile} ${this._outputPath}/.`);
+    try {
+      childProcess.execSync(`adb pull ${this._tempFile} ${this._outputPath}/.`);
+    } catch (err) {
+      console.error(err);
+    }
 
     super.onClose(code);
   }

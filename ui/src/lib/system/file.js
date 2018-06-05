@@ -3,7 +3,6 @@ import _p from 'path';
 import { remote } from 'electron';
 
 import _ from '../utils';
-import { sendEvent } from './base';
 
 export const exportFile = (content, filename, path) => {
   let basePath = _.getAbsolutePath(path);

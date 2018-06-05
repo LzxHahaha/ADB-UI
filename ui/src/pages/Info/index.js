@@ -4,7 +4,6 @@ import { observable } from 'mobx';
 import { Card, Button, Form, Row, Col, message } from 'antd';
 
 import adb from '../../lib/adb';
-import { getDeviceInfo, getCpuInfo, getMemInfo } from '../../lib/adb';
 import InfoModal from './modals/InfoModal';
 
 @observer
@@ -23,7 +22,7 @@ export default class Info extends React.Component {
   getInfo = async () => {
     try {
       this.loading = true;
-      this.info = await getDeviceInfo(this.props.device);
+      this.info = await adb.baseInfo(this.props.device);
     } finally {
       this.loading = false;
     }
@@ -45,9 +44,9 @@ export default class Info extends React.Component {
   updateInfoModal = async (key) => {
     let func;
     if (key === 'cpu') {
-      func = getCpuInfo;
+      func = adb.cpuInfo;
     } else if (key === 'mem') {
-      func = getMemInfo;
+      func = adb.memoryInfo;
     } else {
       return;
     }

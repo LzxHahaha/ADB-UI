@@ -39,7 +39,7 @@ export default class Recorder extends React.Component {
 
   onCaptureClick = async () => {
     this.latestCap = `screencap_${+new Date()}.png`;
-    const file = await adb.screenRecord(this.capPath, this.latestCap);
+    const file = await adb.screenCapture(this.capPath, this.latestCap);
     this.capImages.push(file);
   };
 
@@ -60,7 +60,13 @@ export default class Recorder extends React.Component {
     }
     this.recording = true;
     this.latestVideo = `record_${+new Date()}.mp4`;
-    this.recordClient = adb.screenRecord(this.props.device, this.recordPhonePath, this.recordPath, this.latestVideo, this.recordTime);
+    this.recordClient = adb.screenRecord({
+      device: this.props.device,
+      phonePath: this.recordPhonePath,
+      path: this.recordPath,
+      filename: this.latestVideo,
+      time: this.recordTime
+    });
     this.recordClient.on('exception', msg => {
       notification.error(msg);
       this.onStopRecordClick();
@@ -75,13 +81,13 @@ export default class Recorder extends React.Component {
       return;
     }
     this.recording = false;
-    this.recordClient.disconnect();
+    this.recordClient.break();
     this.recordClient = null;
   };
 
   onShowRecordClick = () => {
     alert('...');
-    // openFolder(`${this.recordPath}/${this.latestVideo}`);
+    openFolder(`${this.recordPath}/${this.latestVideo}`);
   };
 
   onExportEventClick = () => {
@@ -99,13 +105,13 @@ export default class Recorder extends React.Component {
           </Col>
           <Col span={18}>
             <Button type="primary" icon="camera" onClick={this.onCaptureClick}>截图</Button>
-            <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图</Button>
+            <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图库</Button>
           </Col>
         </Row>
         <div className={styles.capContainer}>
           {
             this.capImages.length ? this.capImages.map(el => (
-              <Tooltip placement="top" title="在文件夹中查看">
+              <Tooltip placement="top" title="在文件夹中查看" key={el}>
                 <div className={styles.capPreview}>
                   <img src={`file://${el}`} alt={el} className={styles.capImage} onClick={() => openFolder(el)} />
                   <span className={styles.capTitle}>{el.split(/[\\/]/g).pop()}</span>
@@ -123,8 +129,8 @@ export default class Recorder extends React.Component {
       <Form>
         <Row gutter={20}>
           <Col span={6}>
-            <FormItem label="手机存储路径">
-              <Input prefix={<Icon type="mobile" />} value={this.recordPhonePath} placeholder="请输入手机上的保存路径"
+            <FormItem label="手机临时存储路径">
+              <Input prefix={<Icon type="mobile" />} value={this.recordPhonePath} placeholder="请输入手机上的临时保存路径"
                      onChange={e => this.recordPath = e.target.value} />
             </FormItem>
           </Col>

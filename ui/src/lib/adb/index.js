@@ -102,9 +102,9 @@ export default {
     return adbCmd(device, 'shell cat /proc/meminfo');
   },
 
-  appList(device, name) {
+  async appList(device, name) {
     name = name ? ` "${name}"` : '';
-    const list = adbCmd(device, `shell pm list packages${name}`).split('\n');
+    const list = (await adbCmd(device, `shell pm list packages${name}`)).split('\n');
     return list.map(el => el.trim().split(':')[1]);
   }
 };
