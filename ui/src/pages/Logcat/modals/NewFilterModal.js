@@ -3,7 +3,7 @@ import { Modal, Form, Select } from 'antd';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
-import { getAppList } from '../../../ipc/shell';
+import adb from '../../../lib/adb';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -29,7 +29,7 @@ export default class NewFilterModal extends React.Component {
   }
 
   refreshAppSource = async (name = '') => {
-    this.apps = ['*'].concat(await getAppList(this.props.device, name) || []);
+    this.apps = ['*'].concat(await adb.appList(this.props.device, name) || []);
   };
 
   onOk = () => {

@@ -1,6 +1,6 @@
 import { observable, action, runInAction } from 'mobx';
 
-import { getDevices } from "../native/devices";
+import adb from "../lib/adb";
 
 export default class DevicesStore {
   @observable list = [];
@@ -11,7 +11,7 @@ export default class DevicesStore {
 
   @action
   async getDevices() {
-    const list = await getDevices();
+    const list = await adb.devices();
     runInAction(() => this.list = list || []);
   }
 }

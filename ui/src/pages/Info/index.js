@@ -3,7 +3,8 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Card, Button, Form, Row, Col, message } from 'antd';
 
-import { getDeviceInfo, getCpuInfo, getMemInfo } from '../../native/devices';
+import adb from '../../lib/adb';
+import { getDeviceInfo, getCpuInfo, getMemInfo } from '../../lib/adb';
 import InfoModal from './modals/InfoModal';
 
 @observer

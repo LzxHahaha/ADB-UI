@@ -4,7 +4,7 @@ import { autorun } from 'mobx';
 import { Button, List, message } from 'antd';
 import { remote } from 'electron';
 
-import { quit } from '../../ipc/system';
+import { sendEvent } from '../../lib/ipc';
 
 import styles from './index.css';
 
@@ -77,7 +77,7 @@ export default class Startup extends React.Component {
         <div className={styles.buttons}>
           <Button shape="circle" icon="sync" size="small" type="primary" onClick={this.onRefreshClick} />
           <Button shape="circle" icon="minus" size="small" onClick={this.minimize} />
-          <Button shape="circle" icon="logout" type="danger" size="small" onClick={quit} />
+          <Button shape="circle" icon="logout" type="danger" size="small" onClick={() => sendEvent('quit')} />
         </div>
       </div>
     );

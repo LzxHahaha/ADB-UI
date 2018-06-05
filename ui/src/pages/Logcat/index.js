@@ -5,8 +5,8 @@ import { Button, Modal, Card, Row, Col, Form, Select, Tag } from 'antd';
 
 import NewFilterModal from './modals/NewFilterModal';
 
-import { startLog } from '../../ipc/logcat';
-import { exportFile } from '../../ipc/system';
+import adb from '../../lib/adb';
+import { exportFile } from '../../lib/system/file';
 
 import styles from './index.css';
 
@@ -40,7 +40,7 @@ export default class Logcat extends React.Component {
 
   componentWillUnmount() {
     if (this.logClient) {
-      this.logClient.disconnect();
+      this.logClient.kill();
     }
   }
 
@@ -50,7 +50,7 @@ export default class Logcat extends React.Component {
     }
     this.logging = true;
     if (!this.logClient) {
-      this.logClient = startLog({
+      this.logClient = adb.logcat({
         device: this.props.device,
         format: this.format,
         filters: this.filters.map(el => el)
@@ -78,7 +78,7 @@ export default class Logcat extends React.Component {
     if (!this.logging) {
       return;
     }
-    this.logClient.disconnect();
+    this.logClient.kill();
     this.logClient = null;
     this.logging = false;
     if (this.log) {

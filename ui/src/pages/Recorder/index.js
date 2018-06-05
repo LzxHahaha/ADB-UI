@@ -3,8 +3,8 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Row, Col, Card, Radio, Button, Input, Icon, Form, Modal, Tooltip, notification } from 'antd'
 
-import { screenCapture, startRecord } from '../../ipc/shell';
-import { exportFile, openFolder } from '../../ipc/system';
+import adb from '../../lib/adb';
+import { exportFile, openFolder } from '../../lib/system/file';
 
 import styles from './index.css';
 
@@ -39,7 +39,7 @@ export default class Recorder extends React.Component {
 
   onCaptureClick = async () => {
     this.latestCap = `screencap_${+new Date()}.png`;
-    const file = await screenCapture(this.capPath, this.latestCap);
+    const file = await adb.screenRecord(this.capPath, this.latestCap);
     this.capImages.push(file);
   };
 
@@ -60,7 +60,7 @@ export default class Recorder extends React.Component {
     }
     this.recording = true;
     this.latestVideo = `record_${+new Date()}.mp4`;
-    this.recordClient = startRecord(this.props.device, this.recordPhonePath, this.recordPath, this.latestVideo, this.recordTime);
+    this.recordClient = adb.screenRecord(this.props.device, this.recordPhonePath, this.recordPath, this.latestVideo, this.recordTime);
     this.recordClient.on('exception', msg => {
       notification.error(msg);
       this.onStopRecordClick();
