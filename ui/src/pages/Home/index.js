@@ -5,6 +5,8 @@ import { Card, Button } from 'antd';
 
 import withRouter from '../../decorators/withRouter';
 
+import Info from './components/Info';
+
 @withRouter
 @inject(({ store }) => store.devices)
 @observer
@@ -16,44 +18,35 @@ export default class Home extends React.Component {
     document.title = this.current;
   }
 
-  onStatusClick = () => {
+  openTab(key, tabName) {
     this.props.rootStore.tab.push({
-      key: 'info',
-      tab: `设备信息`,
+      key,
+      tab: tabName,
       props: {
         device: this.current
       }
     });
-  };
+  }
 
-  onLogClick = () => {
-    this.props.rootStore.tab.push({
-      key: 'logcat',
-      tab: `日志捕获`,
-      props: {
-        device: this.current
-      }
-    });
-  };
+  onLogClick = () => this.openTab('logcat', '日志捕获');
 
-  onRecordClick = () => {
-    this.props.rootStore.tab.push({
-      key: 'recorder',
-      tab: `步骤录制`,
-      props: {
-        device: this.current
-      }
-    });
-  };
+  onRecordClick = () => this.openTab('recorder', '步骤录制');
+
+  onShellClick = () => this.openTab('shell', '命令输入');
 
   render() {
+    const buttonDisabled = !this.current;
+
     return (
       <div>
         <Card title={this.current} type="inner">
-          <Button onClick={this.onStatusClick} disabled={!this.current}>设备信息</Button>
-          <Button onClick={this.onLogClick} className="f-ml10" disabled={!this.current}>日志捕获</Button>
-          <Button onClick={this.onRecordClick} className="f-ml10" disabled={!this.current}>步骤录制</Button>
+          {/*<Button onClick={this.onStatusClick} disabled={!this.current}>设备信息</Button>*/}
+          <Button onClick={this.onLogClick} disabled={buttonDisabled}>日志捕获</Button>
+          <Button onClick={this.onRecordClick} className="f-ml10" disabled={buttonDisabled}>步骤录制</Button>
+          <Button onClick={this.onShellClick} className="f-ml10" disabled={buttonDisabled}>命令输入</Button>
         </Card>
+        <div className="f-mb10" />
+        <Info />
       </div>
     );
   }

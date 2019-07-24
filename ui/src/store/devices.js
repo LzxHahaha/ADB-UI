@@ -12,6 +12,7 @@ export default class DevicesStore {
   @action
   async getDevices() {
     const list = await adb.devices();
-    runInAction(() => this.list = list || []);
+    // runInAction(() => this.list = list || []);
+    runInAction(() => this.list = [{serialNumber: '123'}]);
   }
 }

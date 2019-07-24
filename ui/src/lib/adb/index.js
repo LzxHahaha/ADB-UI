@@ -27,6 +27,21 @@ function getCmd(device) {
 }
 
 export default {
+  continueExecute(cmd, device, onError, onOutput, onClose = () => {}) {
+    const base = device ? ['-s', device] : [];
+    const exe = childProcess.spawn('adb', base.concat(cmd));
+    exe.stdout.on('data', d => onOutput(d.toString()));
+    exe.stderr.on('data', d => onOutput(d.toString()));
+    exe.on('close', onClose);
+    exe.on('error', onError);
+
+    return {
+      on: exe.on,
+      write: cmd => exe.stdin.write(base.concat(cmd).join(' ')),
+      end: () => exe.stdin.end()
+    };
+  },
+
   async devices() {
     const listStr = await exec('adb devices');
     const list = listStr.trim().split('\n');
@@ -47,7 +62,7 @@ export default {
     return new Logcat(options);
   },
 
-  async screenCapture(basePath, filename) {
+  async screenCapture(basePath = '', filename = '') {
     basePath = _.getAbsolutePath(basePath);
     if (!fs.existsSync(basePath)) {
       fs.mkdirSync(basePath);

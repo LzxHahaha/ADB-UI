@@ -1,11 +1,11 @@
-import Home from './pages/Home';
-import Info from './pages/Info';
-import Logcat from './pages/Logcat';
-import Recorder from './pages/Recorder';
+import home from './pages/Home';
+import logcat from './pages/Logcat';
+import recorder from './pages/Recorder';
+import shell from './pages/Shell';
 
 export default {
-  home: Home,
-  info: Info,
-  logcat: Logcat,
-  recorder: Recorder
+  home,
+  logcat,
+  recorder,
+  shell
 }

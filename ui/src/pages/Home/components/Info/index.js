@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Card, Button, Form, Row, Col, message } from 'antd';
 
-import adb from '../../lib/adb';
+import adb from '../../../../lib/adb';
 import InfoModal from './modals/InfoModal';
 
 @observer
@@ -120,18 +120,16 @@ export default class Info extends React.Component {
 
   render() {
     return (
-      <div>
-        <Card title="信息" type="inner"
-              extra={<Button size="small" type="primary" onClick={this.onRefreshClick} shape="circle" icon="sync" disabled={this.loading} />}
-        >
-          {this.renderBaseInfo()}
-          {this.renderButtons()}
-        </Card>
+      <Card title="设备信息" type="inner"
+            extra={<Button size="small" type="primary" onClick={this.onRefreshClick} shape="circle" icon="sync" disabled={this.loading} />}
+      >
+        {this.renderBaseInfo()}
+        {this.renderButtons()}
         <InfoModal title="CPU 信息" visible={this.cpuInfoVisible} justOkText="关闭" info={this.cpuInfo} closable={false}
                    onRefresh={() => this.updateInfoModal('cpu')} onClose={() => this.onInfoModalClose('cpu')} />
         <InfoModal title="内存信息" visible={this.memInfoVisible} justOkText="关闭" info={this.memInfo} closable={false}
                    onRefresh={() => this.updateInfoModal('mem')} onClose={() => this.onInfoModalClose('mem')} />
-      </div>
+      </Card>
     );
   }
 }

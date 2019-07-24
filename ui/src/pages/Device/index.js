@@ -49,7 +49,6 @@ export default class Container extends React.Component {
             ))
           }
         </Tabs>
-        <FindBox />
       </div>
     );
   }

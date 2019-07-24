@@ -8,11 +8,11 @@ import { sendEvent } from '../../lib/ipc';
 
 import styles from './index.css';
 
-import logoImage from '../../resources/adb.png';
-
 @inject(({ store }) => store.devices)
 @observer
 export default class Startup extends React.Component {
+  locale = { emptyText: '未检测到设备连接' };
+
   async componentWillMount() {
     autorun(() => {
       if (this.props.list.length === 0) {
@@ -67,11 +67,12 @@ export default class Startup extends React.Component {
   render() {
     return (
       <div className={styles.container}>
-        <img src={logoImage} alt="logo" />
+        <h1>ADB</h1>
         <List
           className={styles.list}
           bordered
           dataSource={this.props.list}
+          locale={this.locale}
           renderItem={this.renderListItem}
         />
         <div className={styles.buttons}>

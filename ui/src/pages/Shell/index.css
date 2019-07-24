@@ -1,0 +1,19 @@
+.container {
+    flex-direction: column;
+    height: 100%;
+}
+
+.loggerContainer {
+    height: 400px;
+    background-color: #2b2b2b;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    overflow: auto;
+}
+
+.logger {
+    word-break: break-all;
+    overflow: visible;
+    max-height: 100%;
+}
