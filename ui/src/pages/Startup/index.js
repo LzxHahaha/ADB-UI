@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { autorun } from 'mobx';
-import { Button, List, message } from 'antd';
+import { autorun, observable } from 'mobx';
+import { Button, List, Modal, Input, message } from 'antd';
 import { remote } from 'electron';
 
 import { sendEvent } from '../../lib/ipc';
@@ -12,6 +12,8 @@ import styles from './index.css';
 @observer
 export default class Startup extends React.Component {
   locale = { emptyText: '未检测到设备连接' };
+  @observable ipVisible = false;
+  @observable ip = '';
 
   async componentWillMount() {
     autorun(() => {
@@ -21,7 +23,7 @@ export default class Startup extends React.Component {
         this.current = this.props.list[0].serialNumber;
       }
     });
-    await this.props.rootStore.devices.getDevices();
+    await this.getDevices(true);
   }
 
   minimize() {
@@ -29,9 +31,18 @@ export default class Startup extends React.Component {
     window.minimize();
   }
 
+  async getDevices(silent) {
+    try {
+      await this.props.rootStore.devices.getDevices();
+      silent && message.success('设备列表已刷新');
+    } catch (e) {
+      console.error(e);
+      message.error(e.message);
+    }
+  }
+
   onRefreshClick = async () => {
-    await this.props.rootStore.devices.getDevices();
-    message.success('设备列表已刷新');
+    this.getDevices();
   };
 
   onDeviceClick(id) {
@@ -49,6 +60,38 @@ export default class Startup extends React.Component {
     win.loadURL(window.location.href + `device/${id}`);
   }
 
+  onDisconnectClick = async () => {
+    try {
+      await this.props.rootStore.devices.disconnect();
+      throw new Error('test');
+    } catch (e) {
+      console.error(e);
+      message.error(e.message);
+    }
+  };
+
+
+  onNetClick = () => this.ipVisible = true;
+  onIpOk = async () => {
+    if (!/^\d{1,3}(\.\d{1,3}){3}(:\d+)?$/.test(this.ip)) {
+      message.error('IP输入有误');
+      return;
+    }
+    try {
+      const ip = this.ip;
+      await this.props.rootStore.devices.linkDevice(ip);
+      this.onIpClose();
+      this.onDeviceClick(ip);
+    } catch (e) {
+      message.error(e.message);
+      console.error(e);
+    }
+  };
+  onIpClose = () => {
+    this.ip = '';
+    this.ipVisible = false;
+  };
+
   renderListHeader = () => (
     <div className={styles.title}>
       <span className={styles.titleText}>设备列表</span>
@@ -65,6 +108,8 @@ export default class Startup extends React.Component {
   );
 
   render() {
+    const hasWifiDevice = this.props.list.some(el => el.isWifi);
+
     return (
       <div className={styles.container}>
         <h1>ADB</h1>
@@ -75,11 +120,19 @@ export default class Startup extends React.Component {
           locale={this.locale}
           renderItem={this.renderListItem}
         />
+        <div className={styles.wifiButton}>
+          <Button type="link" size="small" onClick={this.onNetClick}>Wi-Fi连接</Button>
+          { hasWifiDevice && <Button type="link" size="small" onClick={this.onDisconnectClick}>断开Wi-Fi连接</Button>}
+        </div>
         <div className={styles.buttons}>
           <Button shape="circle" icon="sync" size="small" type="primary" onClick={this.onRefreshClick} />
           <Button shape="circle" icon="minus" size="small" onClick={this.minimize} />
           <Button shape="circle" icon="logout" type="danger" size="small" onClick={() => sendEvent('quit')} />
         </div>
+
+        <Modal className={styles.wifiModal} title="IP输入" visible={this.ipVisible} onOk={this.onIpOk} onCancel={this.onIpClose}>
+          <Input value={this.ip} onChange={e => this.ip = e.target.value} />
+        </Modal>
       </div>
     );
   }

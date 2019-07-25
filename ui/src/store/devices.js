@@ -13,6 +13,24 @@ export default class DevicesStore {
   async getDevices() {
     const list = await adb.devices();
     runInAction(() => this.list = list || []);
-    // runInAction(() => this.list = [{serialNumber: '123'}]);
+  }
+
+  @action
+  async linkDevice(ip) {
+    // const res = await adb.exec(null, `connect ${ip}`);
+    runInAction(() => {
+      this.list.push({
+        serialNumber: ip,
+        isWifi: true
+      })
+    });
+  }
+
+  @action
+  async disconnect() {
+    await adb.exec(null, 'disconnect');
+    runInAction(() => {
+      this.list = this.list.filter(el => !el.isWifi);
+    });
   }
 }
