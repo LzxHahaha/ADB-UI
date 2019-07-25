@@ -63,7 +63,6 @@ export default class Startup extends React.Component {
   onDisconnectClick = async () => {
     try {
       await this.props.rootStore.devices.disconnect();
-      throw new Error('test');
     } catch (e) {
       console.error(e);
       message.error(e.message);
