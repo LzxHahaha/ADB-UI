@@ -1,6 +1,5 @@
 import childProcess from 'child_process';
 import _p from 'path';
-import fs from 'fs';
 
 import _ from '../utils';
 import Logcat from './Logcat';
@@ -27,19 +26,19 @@ function getCmd(device) {
 }
 
 export default {
+  exec: adbCmd,
+
   continueExecute(cmd, device, onError, onOutput, onClose = () => {}) {
     const base = device ? ['-s', device] : [];
-    const exe = childProcess.spawn('adb', base.concat(cmd));
+    const exe = childProcess.spawn('adb', base.concat(cmd), {
+      windowsHide: true
+    });
     exe.stdout.on('data', d => onOutput(d.toString()));
     exe.stderr.on('data', d => onOutput(d.toString()));
     exe.on('close', onClose);
     exe.on('error', onError);
 
-    return {
-      on: exe.on,
-      write: cmd => exe.stdin.write(base.concat(cmd).join(' ')),
-      end: () => exe.stdin.end()
-    };
+    return exe;
   },
 
   async devices() {
@@ -63,10 +62,7 @@ export default {
   },
 
   async screenCapture(basePath = '', filename = '') {
-    basePath = _.getAbsolutePath(basePath);
-    if (!fs.existsSync(basePath)) {
-      fs.mkdirSync(basePath);
-    }
+    basePath = _.mkdir(basePath);
     if (!/\.\w+$/.test(filename)) {
       filename += '.png';
     }

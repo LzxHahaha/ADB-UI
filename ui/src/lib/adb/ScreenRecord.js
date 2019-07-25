@@ -1,5 +1,4 @@
 import _p from 'path';
-import fs from 'fs';
 import childProcess from 'child_process';
 
 import _ from '../utils';
@@ -26,6 +25,9 @@ export default class ScreenRecord extends AdbBase {
     // 这个指令讲道理不会有输出，有的话都是错误
     this.emit('exception', data);
   }
+  onStdError(data) {
+    this.onStdData(data);
+  }
 
   onClose(code) {
     try {
@@ -37,10 +39,13 @@ export default class ScreenRecord extends AdbBase {
     super.onClose(code);
   }
 
+  onError(err) {
+    this.onStdData(err);
+    this.reset();
+  }
+
   start() {
-    if (!fs.existsSync(this._outputPath)) {
-      fs.mkdirSync(this._outputPath);
-    }
+    _.mkdir(this._outputPath);
     super.start();
   }
 }

@@ -7,10 +7,7 @@ import _ from '../utils';
 
 listen('write-file', (data) => {
   const { content, filename } = data;
-  let basePath = _.getAbsolutePath(data.path);
-  if (!fs.existsSync(basePath)) {
-    fs.mkdirSync(basePath);
-  }
+  let basePath = _.mkdir(data.path);
   const filePath = _p.join(basePath, filename);
   fs.writeFileSync(filePath, content);
   event.returnValue = filePath;

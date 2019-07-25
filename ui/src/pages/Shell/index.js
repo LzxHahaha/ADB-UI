@@ -11,7 +11,7 @@ import styles from './index.css';
 @observer
 export default class Shell extends React.Component {
   childProcess = null;
-  @observable shell = '';
+  @observable input = '';
   @observable log = '';
 
   addLog = (value) => {
@@ -19,46 +19,69 @@ export default class Shell extends React.Component {
     this.codeView.scrollTop = this.codeView.scrollHeight;
   };
 
+  parseCmd(cmd) {
+    const res = [];
+    let tmp = '';
+    let start = null;
+    for (let i = 0; i < cmd.length; ++i) {
+      if (start) {
+        tmp += cmd[i];
+        if (cmd[i] === start) {
+          start = null;
+          res.push(tmp);
+          tmp = '';
+        }
+      } else if (cmd[i] === '"' || cmd[i] === '\'') {
+        tmp += cmd[i];
+        start = cmd[i];
+      } else if (cmd[i] === '\\' && cmd[i + 1] === ' ') {
+        tmp += ' ';
+        i += 1;
+      } else if (cmd[i] === ' ') {
+        res.push(tmp);
+        tmp = '';
+      } else {
+        tmp += cmd[i];
+      }
+    }
+    tmp && res.push(tmp);
+
+    return res;
+  }
+
   submit = async () => {
-    const shell = this.shell.trim();
-    if (!shell) {
+    const input = this.input.trim();
+    this.input = '';
+    if (!input) {
       return;
     }
-    this.shell = '';
-    const prefix = this.childProcess ? '' : `adb -s ${this.props.device} `;
-    this.addLog(`\n$ ${prefix}${shell}\n`);
-
-    if (shell === '^C') {
-      this.childProcess && this.childProcess.end();
+    if (input === 'shell') {
+      message.warn('暂不支持直接进入shell，请使用shell + 具体指令');
       return;
     }
 
-    if (this.childProcess) {
-      this.childProcess && this.childProcess.write(shell);
-    } else {
-      this.childProcess = await adb.continueExecute(
-        shell, this.props.device,
-        (err) => {
-          message.error(err.message);
-          this.childProcess = null;
-        },
-        this.addLog,
-        () => this.childProcess = null
-      );
-    }
+    this.addLog(`\n$ adb -s ${this.props.device} ${input}\n`);
+    const cmd = this.parseCmd(input);
+
+    await adb.continueExecute(
+      cmd,
+      this.props.device,
+      (err) => message.error(err.message),
+      this.addLog
+    );
   };
 
-  onShellChange = e => this.shell = e.target.value;
+  onInputChange = e => this.input = e.target.value;
 
   render() {
     return (
       <div className={styles.container}>
         <div className="f-mb10">
           <Card>
-            <Input value={this.shell} allowClear placeholder="请输入命令，按回车提交"
-                   addonBefore={`$ adb -s ${this.props.device} `}
-                   addonAfter={<Button type="link" size="small" onClick={this.submit}>发送</Button>}
-                   onChange={this.onShellChange} onPressEnter={this.submit}
+            <Input value={this.input} allowClear placeholder="请输入命令，按回车提交"
+              addonBefore={`$ adb -s ${this.props.device} `}
+              addonAfter={<Button type="link" size="small" onClick={this.submit}>发送</Button>}
+              onChange={this.onInputChange} onPressEnter={this.submit}
             />
           </Card>
         </div>

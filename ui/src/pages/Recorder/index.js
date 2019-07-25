@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-import { Row, Col, Card, Radio, Button, Input, Icon, Form, Modal, Tooltip, notification } from 'antd'
+import { Row, Col, Card, Radio, Button, Input, Icon, Form, Alert, Modal, Tooltip, message } from 'antd'
 
 import adb from '../../lib/adb';
 import { exportFile, openFolder } from '../../lib/system/file';
@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const recordWay = [
   { key: 'screenCap', label: '屏幕截图' },
   { key: 'screenRecord', label: '屏幕录像' },
-  { key: 'eventListener', label: '事件监听' }
+  // { key: 'eventListener', label: '事件监听' }
 ];
 
 @observer
@@ -43,10 +43,6 @@ export default class Recorder extends React.Component {
     this.capImages.push(file);
   };
 
-  onShowCaptureClick = () => {
-    openFolder(`${this.capPath}/${this.latestCap}`);
-  };
-
   onRecordTimeChange = e => {
     let value = +e.target.value || this.recordTime;
     value = Math.min(value, 180);
@@ -67,8 +63,9 @@ export default class Recorder extends React.Component {
       filename: this.latestVideo,
       time: this.recordTime
     });
-    this.recordClient.on('exception', msg => {
-      msg && notification.error(msg);
+    this.recordClient.on('exception', err => {
+      const msg = err.message || err;
+      message.error(msg);
       this.onStopRecordClick();
     });
     this.recordClient.on('close', () => this.onStopRecordClick());
@@ -80,9 +77,14 @@ export default class Recorder extends React.Component {
     if (!this.recording) {
       return;
     }
-    this.recording = false;
-    this.recordClient.break();
-    this.recordClient = null;
+    try {
+      this.recordClient.break();
+    } catch(e) {
+      console.error(e);
+    } finally {
+      this.recordClient = null;
+      this.recording = false;
+    }
   };
 
   onShowRecordClick = () => {
@@ -94,25 +96,24 @@ export default class Recorder extends React.Component {
     Modal.success({ title: '导出成功', content: `记录已保存到${filePath}` });
   };
 
-  onStartClick = () => {
-    
-  };
+  // onStartClick = () => {
+  // };
 
-  onStopClick = () => {
-
-  };
+  // onStopClick = () => {
+  // };
 
   renderScreenCap() {
     return (
-      <div>
+      <Form>
         <Row gutter={20}>
           <Col span={6}>
-            <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
-                   onChange={e => this.capPath = e.target.value} />
+            <FormItem label="截图保存文件夹">
+              <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
+                    onChange={e => this.capPath = e.target.value} />
+            </FormItem>
           </Col>
-          <Col span={18}>
+          <Col span={24}>
             <Button type="primary" icon="camera" onClick={this.onCaptureClick}>截图</Button>
-            <Button className="f-ml10" onClick={this.onShowCaptureClick}>查看截图库</Button>
           </Col>
         </Row>
         <div className={styles.capContainer}>
@@ -127,18 +128,23 @@ export default class Recorder extends React.Component {
             )) : null
           }
         </div>
-      </div>
+      </Form>
     );
   }
 
   renderScreenRecord() {
     return (
       <Form>
+        <Alert
+          message="视频录像需要Android 4.1.1 以上，且部分设备或虚拟机可能不支持"
+          type="warning"
+          closable
+        />
         <Row gutter={20}>
           <Col span={6}>
             <FormItem label="手机临时存储路径">
               <Input prefix={<Icon type="mobile" />} value={this.recordPhonePath} placeholder="请输入手机上的临时保存路径"
-                     onChange={e => this.recordPath = e.target.value} />
+                     onChange={e => this.recordPhonePath = e.target.value} />
             </FormItem>
           </Col>
           <Col span={6}>
@@ -153,8 +159,6 @@ export default class Recorder extends React.Component {
                      onChange={this.onRecordTimeChange} addonAfter="秒"/>
             </FormItem>
           </Col>
-        </Row>
-        <Row>
           <Col span={24}>
             {
               this.recording
@@ -168,19 +172,19 @@ export default class Recorder extends React.Component {
     );
   }
 
-  renderEventCap() {
-    return (
-      <div>
-        {
-          this.logging
-            ? <Button type="primary" onClick={this.onStopClick}>停止捕获</Button>
-            : <Button type="primary" onClick={this.onStartClick}>开始捕获</Button>
-        }
-        <Button className="f-ml10" onClick={() => this.log = ''}>清空记录</Button>
-        <Button className="f-ml10" onClick={this.onExportEventClick}>导出</Button>
-      </div>
-    );
-  }
+  // renderEventCap() {
+  //   return (
+  //     <div>
+  //       {
+  //         this.logging
+  //           ? <Button type="primary" onClick={this.onStopClick}>停止捕获</Button>
+  //           : <Button type="primary" onClick={this.onStartClick}>开始捕获</Button>
+  //       }
+  //       <Button className="f-ml10" onClick={() => this.log = ''}>清空记录</Button>
+  //       <Button className="f-ml10" onClick={this.onExportEventClick}>导出</Button>
+  //     </div>
+  //   );
+  // }
 
   renderContent() {
     switch (this.recordWay) {
@@ -188,8 +192,8 @@ export default class Recorder extends React.Component {
         return this.renderScreenCap();
       case 'screenRecord':
         return this.renderScreenRecord();
-      case 'eventListener':
-        return this.renderEventCap();
+      // case 'eventListener':
+      //   return this.renderEventCap();
       default:
         return null;
     }
@@ -198,17 +202,15 @@ export default class Recorder extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <Card title="方式" type="inner">
-            <RadioGroup value={this.recordWay} onChange={e => this.recordWay = e.target.value}>
-              {recordWay.map(el => <RadioButton value={el.key} key={el.key}>{el.label}</RadioButton>)}
-            </RadioGroup>
+        <Card type="inner">
+          <RadioGroup value={this.recordWay} onChange={e => this.recordWay = e.target.value}>
+            {recordWay.map(el => <RadioButton value={el.key} key={el.key}>{el.label}</RadioButton>)}
+          </RadioGroup>
 
-            <div className="f-mt10">
-              {this.renderContent()}
-            </div>
-          </Card>
-        </div>
+          <div className="f-mt10">
+            {this.renderContent()}
+          </div>
+        </Card>
       </div>
     );
   }

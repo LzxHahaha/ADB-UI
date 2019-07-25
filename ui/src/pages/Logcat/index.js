@@ -1,7 +1,7 @@
 import React from 'react';
 import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react';
-import { Button, Modal, Card, Row, Col, Form, Select, Tag } from 'antd';
+import { Button, Modal, Card, Row, Col, Form, Select, Tag, message } from 'antd';
 
 import NewFilterModal from './modals/NewFilterModal';
 
@@ -87,6 +87,10 @@ export default class Logcat extends React.Component {
   };
 
   onExportClick = () => {
+    if (!this.log) {
+      message.error('无日志');
+      return;
+    }
     const filePath = exportFile(this.log, `adb_log_${+new Date()}.log`);
     Modal.success({ title: '导出成功', content: `日志已保存到${filePath}` });
   };

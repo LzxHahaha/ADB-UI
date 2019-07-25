@@ -26,11 +26,14 @@ export default class AdbBase {
     if (this._process) {
       return false;
     }
-    this._process = childProcess.exec(`adb ${this._getArgs().join(' ')}`);
+    const cmd = `adb ${this._getArgs().join(' ')}`;
+    console.log('adb exec:', cmd);
+    this._process = childProcess.exec(cmd);
 
     this._process.stdout.on('data', (data) => this.onStdData(data.toString()));
     this._process.stderr.on('data', (data) => this.onStdError(data.toString()));
     this._process.on('close', (code) => this.onClose(code));
+    this._process.on('error', (code) => this.onStdError(code));
   }
 
   reset() {
@@ -41,7 +44,11 @@ export default class AdbBase {
 
   // send ctrl-c
   break() {
-    this._process.stdin.write('\x03');
+    try {
+      this._process.stdin.write('\x03');
+    } finally {
+      this._process = null;
+    }
   }
 
   restart() {
@@ -85,6 +92,10 @@ export default class AdbBase {
   }
   onClose(code) {
     this.emit('close', code);
+    this.reset();
+  }
+  onError(err) {
+    this.emit('error', err);
     this.reset();
   }
 }
