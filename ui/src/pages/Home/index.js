@@ -31,7 +31,7 @@ export default class Home extends React.Component {
   onLogClick = () => this.openTab('logcat', '日志捕获');
   onRecordClick = () => this.openTab('recorder', '步骤录制');
   onShellClick = () => this.openTab('shell', '命令输入');
-  onInstallClick = () => this.openTab('install', '重复安装');
+  // onInstallClick = () => this.openTab('install', 'install重复安装');
 
   render() {
     const buttonDisabled = !this.current;
@@ -43,7 +43,7 @@ export default class Home extends React.Component {
           <Button onClick={this.onLogClick} disabled={buttonDisabled}>日志捕获</Button>
           <Button onClick={this.onRecordClick} className="f-ml10" disabled={buttonDisabled}>步骤录制</Button>
           <Button onClick={this.onShellClick} className="f-ml10" disabled={buttonDisabled}>命令输入</Button>
-          <Button onClick={this.onInstallClick} className="f-ml10" disabled={buttonDisabled}>重复安装</Button>
+          {/*<Button onClick={this.onInstallClick} className="f-ml10" disabled={buttonDisabled}>重复安装</Button>*/}
         </Card>
         <div className="f-mb10" />
         <Info />
