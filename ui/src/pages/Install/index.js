@@ -38,7 +38,7 @@ export default class Install extends React.Component {
         throw new Error(`卸载失败: ${uninstall}`);
       }
       this.mission(times - 1, apkPath, packageName);
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       Modal.error({
         title: '执行失败',

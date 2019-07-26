@@ -38,9 +38,14 @@ export default class Recorder extends React.Component {
   latestVideo = '';
 
   onCaptureClick = async () => {
-    this.latestCap = `screencap_${+new Date()}.png`;
-    const file = await adb.screenCapture(this.capPath, this.latestCap);
-    this.capImages.push(file);
+    try {
+      this.latestCap = `screencap_${+new Date()}.png`;
+      const file = await adb.screenCapture(this.capPath, this.latestCap);
+      this.capImages.push(file);
+    } catch (e) {
+      console.error(e);
+      message.error(e.message);
+    }
   };
 
   onRecordTimeChange = e => {
@@ -79,7 +84,7 @@ export default class Recorder extends React.Component {
     }
     try {
       this.recordClient.break();
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     } finally {
       this.recordClient = null;
