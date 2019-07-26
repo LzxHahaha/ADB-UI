@@ -3,6 +3,7 @@ import logcat from './pages/Logcat';
 import recorder from './pages/Recorder';
 import shell from './pages/Shell';
 import install from './pages/Install';
+import tcp from './pages/Tcp';
 
 export default {
   home,
@@ -10,4 +11,5 @@ export default {
   recorder,
   shell,
   install,
+  tcp,
 }

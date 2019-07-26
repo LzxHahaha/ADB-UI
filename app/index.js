@@ -42,25 +42,25 @@ app.on('ready', () => {
     //     }
     //   ]
     // },
-    {
-      label: '帮助',
-      submenu: [
-        {
-          label: '问题反馈',
-          click: () => shell.openExternal('https://github.com/LzxHahaha/ADB-UI/issues')
-        },
-        {
-          label: '当前版本：' + packageInfo.version
-        }
-      ]
-    }
+    // {
+    //   label: '帮助',
+    //   submenu: [
+    //     {
+    //       label: '问题反馈',
+    //       click: () => shell.openExternal('https://github.com/LzxHahaha/ADB-UI/issues')
+    //     },
+    //     {
+    //       label: '当前版本：' + packageInfo.version
+    //     }
+    //   ]
+    // }
   ]);
 
   if (process.env.NODE_ENV === 'development') {
     win.loadURL('http://localhost:3000/');
     win.webContents.openDevTools();
   } else {
-    Menu.setApplicationMenu(menu);
+    // Menu.setApplicationMenu(menu);
     win.loadURL(url.format({
       pathname: path.join(__dirname, './resources/index.html'),
       protocol: 'file:',

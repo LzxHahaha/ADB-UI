@@ -17,20 +17,14 @@ export default class DevicesStore {
 
   @action
   async linkDevice(ip) {
-    // const res = await adb.exec(null, `connect ${ip}`);
-    runInAction(() => {
-      this.list.push({
-        serialNumber: ip,
-        isWifi: true
-      })
-    });
+    const res = await adb.exec(null, `connect ${ip}`);
+    this.getDevices();
+    return !/^failed/.test(res);
   }
 
   @action
-  async disconnect() {
-    await adb.exec(null, 'disconnect');
-    runInAction(() => {
-      this.list = this.list.filter(el => !el.isWifi);
-    });
+  async disconnect(ip) {
+    await adb.exec(null, `disconnect ${ip}`);
+    this.getDevices();
   }
 }

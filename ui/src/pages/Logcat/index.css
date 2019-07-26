@@ -6,7 +6,7 @@
 
 .loggerContainer {
     flex: 1;
-    max-height: calc(100% - 150px);
+    height: 300px;
     width: 100%;
     overflow: auto;
     background-color: #2b2b2b;

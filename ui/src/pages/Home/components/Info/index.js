@@ -111,7 +111,8 @@ export default class Info extends React.Component {
     return (
       <Row>
         <Col span={24}>
-          <Button onClick={() => this.showInfoModal('cpu')}>CPU 信息</Button>
+          <Button type="primary" onClick={this.onRefreshClick} disabled={this.loading}>刷新</Button>
+          <Button className="f-ml10" onClick={() => this.showInfoModal('cpu')}>CPU 信息</Button>
           <Button className="f-ml10" onClick={() => this.showInfoModal('mem')}>内存信息</Button>
         </Col>
       </Row>
@@ -120,16 +121,14 @@ export default class Info extends React.Component {
 
   render() {
     return (
-      <Card title="设备信息" type="inner"
-            extra={<Button size="small" type="primary" onClick={this.onRefreshClick} shape="circle" icon="sync" disabled={this.loading} />}
-      >
+      <div>
         {this.renderBaseInfo()}
         {this.renderButtons()}
         <InfoModal title="CPU 信息" visible={this.cpuInfoVisible} justOkText="关闭" info={this.cpuInfo} closable={false}
                    onRefresh={() => this.updateInfoModal('cpu')} onClose={() => this.onInfoModalClose('cpu')} />
         <InfoModal title="内存信息" visible={this.memInfoVisible} justOkText="关闭" info={this.memInfo} closable={false}
                    onRefresh={() => this.updateInfoModal('mem')} onClose={() => this.onInfoModalClose('mem')} />
-      </Card>
+      </div>
     );
   }
 }

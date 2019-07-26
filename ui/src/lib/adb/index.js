@@ -117,5 +117,15 @@ export default {
     name = name ? ` "${name}"` : '';
     const list = (await adbCmd(device, `shell pm list packages${name}`)).split('\n');
     return list.map(el => el.trim().split(':')[1]);
+  },
+
+  pullFile(device, from, to = '.') {
+    to = _.getAbsolutePath(to);
+    return adbCmd(device, `pull ${from} ${to}`);
+  },
+
+  pushFile(device, from = '.', to = '/') {
+    from = _.getAbsolutePath(from);
+    return adbCmd(device, `push ${from} ${to}`);
   }
 };

@@ -6,6 +6,8 @@ import { Tabs, Icon } from 'antd';
 // import FindBox from '../../components/FindBox';
 import router from '../../router';
 
+import styles from './index.css';
+
 const TabPane = Tabs.TabPane;
 const Home = router.home;
 
@@ -31,7 +33,7 @@ export default class Container extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div className={styles.container}>
         <Tabs activeKey={this.props.tab} type="editable-card" hideAdd onChange={this.onTabChange}
               onEdit={this.onTabEdit}>
           <TabPane key="home" tab={<span><Icon type="smile" />首页</span>} closable={false}>
