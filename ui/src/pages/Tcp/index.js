@@ -13,7 +13,7 @@ const FormItem = Form.Item;
 export default class Tcp extends React.Component {
   @observable logPath = '/data/local';
   @observable tcpParams = '-p -s 0 -w';
-  @observable exportPath = './tcplog';
+  @observable exportPath = _.getAbsolutePath('./tcplog');
   @observable running = false;
   @observable process = null;
   fileName = '';
@@ -22,7 +22,7 @@ export default class Tcp extends React.Component {
     this.running = false;
     this.process = null;
     err && message.error(`${err}`);
-  }
+  };
 
   stop = async () => {
     try {
@@ -32,7 +32,7 @@ export default class Tcp extends React.Component {
       this.process.stdin && this.process.stdin.end();
       const dir = _.mkdir(this.exportPath);
       const file = `${dir}/${this.fileName}`;
-      await adb.pullFile(this.props.devices, `${this.logPath}/${this.fileName}`, file);
+      await adb.pullFile(this.props.device, `${this.logPath}/${this.fileName}`, file);
       message.success(`日志已导出到${file}`);
     } catch (e) {
       console.error(e);
@@ -40,7 +40,7 @@ export default class Tcp extends React.Component {
     } finally {
       this.clear();
     }
-  }
+  };
 
   onStartClick = async () => {
     try {
@@ -48,7 +48,7 @@ export default class Tcp extends React.Component {
       this.fileName = `tcpdump_${+new Date()}.cap`
       this.process = adb.continueExecute(
         ['shell', `cd ${this.logPath} && tcpdump ${this.tcpParams} ${this.fileName}`],
-        this.props.devices,
+        this.props.device,
         this.clear,
         data => message.info(data),
         this.clear
@@ -62,7 +62,7 @@ export default class Tcp extends React.Component {
 
   onClearClick = async () => {
     try {
-      await adb.exec(this.props.device, `shell rm ${this.logPath}/tcpdump_*.cap`);
+      await adb.exec(this.device, `shell rm ${this.logPath}/tcpdump_*.cap`);
       message.success('清理完成');
     } catch (e) {
       console.error(e);

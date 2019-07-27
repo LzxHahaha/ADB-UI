@@ -1,5 +1,5 @@
 import React from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Button, Form, Row, Col, Input, Icon, Modal, message } from 'antd';
 
@@ -10,7 +10,6 @@ import styles from './index.css';
 const FormItem = Form.Item;
 const ButtonGroup = Button.Group;
 
-@inject(({ store }) => store.devices)
 @observer
 export default class File extends React.Component {
   @observable phoneDirPath = '';
@@ -18,7 +17,7 @@ export default class File extends React.Component {
 
   onPullClick = async () => {
     try {
-      await adb.pullFile(this.props.devices, this.phoneDirPath, this.pcDirPath);
+      await adb.pullFile(this.props.device, this.phoneDirPath, this.pcDirPath);
       message.success('导出成功');
     } catch (e) {
       console.error(e);
@@ -28,7 +27,7 @@ export default class File extends React.Component {
 
   onPushClick = async () => {
     try {
-      await adb.pushFile(this.props.devices, this.pcDirPath, this.phoneDirPath);
+      await adb.pushFile(this.props.device, this.pcDirPath, this.phoneDirPath);
       message.success('导入成功');
     } catch (e) {
       console.error(e);

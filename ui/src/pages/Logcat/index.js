@@ -149,7 +149,7 @@ export default class Logcat extends React.Component {
             {this.log || '无日志'}
           </pre>
         </div>
-        <NewFilterModal device={this.props.device} visible={this.filterModalVisible} onOk={this.onFilterAdd} onCancel={() => this.filterModalVisible = false} />
+        <NewFilterModal device={this.device} visible={this.filterModalVisible} onOk={this.onFilterAdd} onCancel={() => this.filterModalVisible = false} />
       </div>
     );
   }

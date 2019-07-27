@@ -55,13 +55,13 @@ export default class Home extends React.Component {
         <div className="f-mb10" />
         <Collapse defaultActiveKey={['info']}>
           <Panel header="设备信息" key="info">
-            <Info />
+            <Info device={this.current} />
           </Panel>
           <Panel header="查看文件夹" key="dir">
-            <Dir />
+            <Dir device={this.current} />
           </Panel>
           <Panel header="文件传输" key="pull">
-            <File />
+            <File device={this.current} />
           </Panel>
         </Collapse>
       </div>

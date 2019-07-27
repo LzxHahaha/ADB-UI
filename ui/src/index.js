@@ -4,7 +4,7 @@ import { remote } from 'electron';
 
 import App from './App';
 
-window.$dirname = remote.app.getAppPath();
+window.$dirname = remote.app.getAppPath('userData');
 
 ReactDOM.render(
   <App />,

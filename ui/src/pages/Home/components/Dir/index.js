@@ -1,11 +1,10 @@
 import React from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { Button, Form, Input, Icon, Modal } from 'antd';
 
 import adb from '../../../../lib/adb';
 
-@inject(({ store }) => store.devices)
 @observer
 export default class Dir extends React.Component {
   @observable dirPath = '/sdcard/download';

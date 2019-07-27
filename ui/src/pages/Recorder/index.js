@@ -1,10 +1,11 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
-import { Row, Col, Card, Radio, Button, Input, Icon, Form, Alert, Modal, Tooltip, message } from 'antd'
+import { Row, Col, Card, Radio, Button, Input, Icon, Form, Alert, Modal, Tooltip, message } from 'antd';
 
 import adb from '../../lib/adb';
 import { exportFile, openFolder } from '../../lib/system/file';
+import _ from '../../lib/utils';
 
 import styles from './index.css';
 
@@ -21,11 +22,11 @@ const recordWay = [
 @observer
 export default class Recorder extends React.Component {
   @observable recordWay = recordWay[0].key;
-  @observable capPath = './capture';
+  @observable capPath = _.getAbsolutePath('./capture');
   @observable capImages = [];
 
   @observable recordPhonePath = '/data';
-  @observable recordPath = './record';
+  @observable recordPath = _.getAbsolutePath('./record');
   @observable recordTime = 180;
   @observable recording = false;
 
@@ -40,7 +41,7 @@ export default class Recorder extends React.Component {
   onCaptureClick = async () => {
     try {
       this.latestCap = `screencap_${+new Date()}.png`;
-      const file = await adb.screenCapture(this.capPath, this.latestCap);
+      const file = await adb.screenCapture(this.props.device, this.capPath, this.latestCap);
       this.capImages.push(file);
     } catch (e) {
       console.error(e);

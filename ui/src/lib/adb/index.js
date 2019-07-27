@@ -7,6 +7,7 @@ import ScreenRecord from './ScreenRecord';
 
 function exec(command) {
   return new Promise((resolve, reject) => {
+    console.log('Run:', command);
     childProcess.exec(command, (err, stdout) => {
       if (err) {
         return reject(err);
@@ -61,13 +62,13 @@ export default {
     return new Logcat(options);
   },
 
-  async screenCapture(basePath = '', filename = '') {
+  async screenCapture(device, basePath = '', filename = '') {
     basePath = _.mkdir(basePath);
     if (!/\.\w+$/.test(filename)) {
       filename += '.png';
     }
     const name = _p.join(basePath, filename);
-    await exec(`adb exec-out screencap -p > ${name}`);
+    await adbCmd(device, `exec-out screencap -p > ${name}`);
     return name;
   },
 
