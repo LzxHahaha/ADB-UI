@@ -19,7 +19,7 @@ function getAbsolutePath(path, basePath) {
 function mkdir(path, basePath) {
   const dirPath = getAbsolutePath(path, basePath);
   if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath);
+    fs.mkdirSync(dirPath, { recursive: true });
   }
   return dirPath;
 }
