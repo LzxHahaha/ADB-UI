@@ -17,7 +17,9 @@ export default class DevicesStore {
 
   @action
   async linkDevice(ip) {
-    const res = await adb.exec(null, `connect ${ip}`);
+    const res = await Promise.race([
+      adb.exec(null, `connect ${ip}`)
+    ]);
     this.getDevices();
     return !/^failed/.test(res);
   }

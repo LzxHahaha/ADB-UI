@@ -22,6 +22,7 @@ const recordWay = [
 @observer
 export default class Recorder extends React.Component {
   @observable recordWay = recordWay[0].key;
+  @observable capPhonePath = '/data';
   @observable capPath = _.getAbsolutePath('./capture');
   @observable capImages = [];
 
@@ -41,7 +42,7 @@ export default class Recorder extends React.Component {
   onCaptureClick = async () => {
     try {
       this.latestCap = `screencap_${+new Date()}.png`;
-      const file = await adb.screenCapture(this.props.device, this.capPath, this.latestCap);
+      const file = await adb.screenCapture(this.props.device, this.capPath, this.latestCap, this.capPhonePath);
       this.capImages.push(file);
     } catch (e) {
       console.error(e);
@@ -109,13 +110,28 @@ export default class Recorder extends React.Component {
   // };
 
   renderScreenCap() {
+    const capPhoneTip = (
+      <span>
+        手机临时存储路径&nbsp;
+        <Tooltip title="可选，Windows上建议输入，否则图片可能无法正确保存。请确保该路径有写权限。">
+          <Icon type="question-circle-o" />
+        </Tooltip>
+      </span>
+    );
+
     return (
       <Form>
         <Row gutter={20}>
           <Col span={6}>
-            <FormItem label="截图保存文件夹">
+            <FormItem label={capPhoneTip}>
+              <Input prefix={<Icon type="mobile" />} value={this.capPhonePath} placeholder="请输入手机上的保存路径"
+                     onChange={e => this.capPhonePath = e.target.value} />
+            </FormItem>
+          </Col>
+          <Col span={6}>
+            <FormItem label="电脑存储路径">
               <Input prefix={<Icon type="folder" />} value={this.capPath} placeholder="请输入保存路径"
-                    onChange={e => this.capPath = e.target.value} />
+                     onChange={e => this.capPath = e.target.value} />
             </FormItem>
           </Col>
           <Col span={24}>

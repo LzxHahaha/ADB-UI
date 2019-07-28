@@ -99,7 +99,6 @@ export default class Startup extends React.Component {
         return;
       }
       this.onIpClose();
-      this.onDeviceClick(ip);
     } catch (e) {
       message.error(e.message);
       console.error(e);
